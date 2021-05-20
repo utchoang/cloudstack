@@ -258,7 +258,7 @@
             </a-form-item>
           </a-col>
         </a-row>
-        <a-row :gutter="12" v-if="!hyperVMWShow || (hyperVMWShow && !deployasis)">
+        <a-row :gutter="12" v-if="!hyperVMWShow">
           <a-col :md="24" :lg="24">
             <a-form-item :label="$t('label.ostypeid')">
               <a-select
