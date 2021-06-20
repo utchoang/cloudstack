@@ -20,9 +20,7 @@
     id="formLogin"
     class="user-layout-login"
     ref="formLogin"
-    :form="form"
-    @submit="handleSubmit"
-  >
+    :model="form">
     <a-tabs
       :activeKey="customActiveKey"
       size="large"
@@ -31,92 +29,41 @@
       :animated="false"
     >
       <a-tab-pane key="cs">
-        <span slot="tab">
-          <a-icon type="safety" />
-          {{ $t('label.login.portal') }}
-        </span>
+        <template v-slot:tab>
+          <span>
+            <SafetyOutlined />
+            {{ $t('label.login.portal') }}
+          </span>
+        </template>
         <a-form-item>
           <a-input
             size="large"
             type="text"
             autoFocus
             :placeholder="$t('label.username')"
-            v-decorator="[
-              'username',
-              {rules: [{ required: true, message: $t('message.error.username') }, { validator: handleUsernameOrEmail }], validateTrigger: 'change'}
-            ]"
+            v-model:value="form.username"
           >
-            <a-icon slot="prefix" type="user" :style="{ color: 'rgba(0,0,0,.25)' }"/>
+            <template v-slot:prefix>
+              <UserOutlined :style="{ color: 'rgba(0,0,0,.25)' }" />
+            </template>
           </a-input>
-        </a-form-item>
-
-        <a-form-item>
-          <a-input-password
-            size="large"
-            type="password"
-            autocomplete="false"
-            :placeholder="$t('label.password')"
-            v-decorator="[
-              'password',
-              {rules: [{ required: true, message: $t('message.error.password') }], validateTrigger: 'blur'}
-            ]"
-          >
-            <a-icon slot="prefix" type="lock" :style="{ color: 'rgba(0,0,0,.25)' }"/>
-          </a-input-password>
-        </a-form-item>
-
-        <a-form-item>
-          <a-input
-            size="large"
-            type="text"
-            :placeholder="$t('label.domain')"
-            v-decorator="[
-              'domain',
-              {rules: [{ required: false, message: $t('message.error.domain') }], validateTrigger: 'change'}
-            ]"
-          >
-            <a-icon slot="prefix" type="block" :style="{ color: 'rgba(0,0,0,.25)' }"/>
-          </a-input>
-        </a-form-item>
-
-      </a-tab-pane>
-      <a-tab-pane key="saml" :disabled="idps.length === 0">
-        <span slot="tab">
-          <a-icon type="audit" />
-          {{ $t('label.login.single.signon') }}
-        </span>
-        <a-form-item>
-          <a-select v-decorator="['idp', { initialValue: selectedIdp } ]">
-            <a-select-option v-for="(idp, idx) in idps" :key="idx" :value="idp.id">
-              {{ idp.orgName }}
-            </a-select-option>
-          </a-select>
         </a-form-item>
       </a-tab-pane>
     </a-tabs>
-
-    <a-form-item>
-      <a-button
-        size="large"
-        type="primary"
-        htmlType="submit"
-        class="login-button"
-        :loading="state.loginBtn"
-        :disabled="state.loginBtn"
-      >{{ $t('label.login') }}</a-button>
-    </a-form-item>
-    <translation-menu/>
   </a-form>
 </template>
 
 <script>
+import { reactive } from 'vue'
+import { SafetyOutlined, UserOutlined } from '@ant-design/icons-vue'
+
 import { api } from '@/api'
 import { mapActions } from 'vuex'
-import TranslationMenu from '@/components/header/TranslationMenu'
 
 export default {
   components: {
-    TranslationMenu
+    SafetyOutlined,
+    UserOutlined
   },
   data () {
     return {
@@ -125,7 +72,12 @@ export default {
       customActiveKey: 'cs',
       loginBtn: false,
       loginType: 0,
-      form: this.$form.createForm(this),
+      form: reactive({
+        username: undefined,
+        password: undefined,
+        domain: undefined,
+        idp: undefined
+      }),
       state: {
         time: 60,
         loginBtn: false,

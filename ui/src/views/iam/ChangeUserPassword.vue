@@ -23,12 +23,12 @@
         @submit="handleSubmit"
         layout="vertical">
         <a-form-item v-if="!this.isAdminOrDomainAdmin()">
-          <span slot="label">
+          <template v-slot:label>
             {{ $t('label.currentpassword') }}
             <a-tooltip :title="apiParams.currentpassword.description">
               <a-icon type="info-circle" style="color: rgba(0,0,0,.45)" />
             </a-tooltip>
-          </span>
+          </template>
           <a-input-password
             v-decorator="['currentpassword', {
               rules: [{ required: true, message: $t('message.error.current.password') }]
@@ -37,12 +37,12 @@
             autoFocus />
         </a-form-item>
         <a-form-item>
-          <span slot="label">
+          <template v-slot:label>
             {{ $t('label.new.password') }}
             <a-tooltip :title="apiParams.password.description">
               <a-icon type="info-circle" style="color: rgba(0,0,0,.45)" />
             </a-tooltip>
-          </span>
+          </template>
           <a-input-password
             v-decorator="['password', {
               rules: [{ required: true, message: $t('message.error.new.password') }]
@@ -50,12 +50,12 @@
             :placeholder="$t('label.new.password')"/>
         </a-form-item>
         <a-form-item>
-          <span slot="label">
+          <template v-slot:label>
             {{ $t('label.confirmpassword') }}
             <a-tooltip :title="apiParams.password.description">
               <a-icon type="info-circle" style="color: rgba(0,0,0,.45)" />
             </a-tooltip>
-          </span>
+          </template>
           <a-input-password
             v-decorator="['confirmpassword', {
               rules: [

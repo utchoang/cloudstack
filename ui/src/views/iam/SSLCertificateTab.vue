@@ -28,7 +28,7 @@
           :pagination="false"
           v-if="!quickview"
         >
-          <span slot="action" slot-scope="text, record" class="cert-button-action">
+          <template v-slot:action="text, record" class="cert-button-action">
             <tooltip-button
               tooltipPlacement="top"
               :tooltip="$t('label.quickview')"
@@ -44,22 +44,24 @@
               icon="delete"
               size="small"
               @click="onShowConfirm(record)" />
-          </span>
+          </template>
         </a-table>
 
         <a-list size="small" :dataSource="detailColumn" v-if="quickview">
           <div class="close-quickview">
             <a-button @click="() => { this.quickview = false }">{{ $t('label.close') }}</a-button>
           </div>
-          <a-list-item slot="renderItem" slot-scope="item" v-if="item in detail">
-            <div>
-              <strong>{{ $t(item) }}</strong>
-              <br/>
-              <div class="list-item-content">
-                {{ detail[item] }}
-              </div>
-            </div>
-          </a-list-item>
+          <template v-slot:renderItem="item">
+            <a-list-item v-if="item in detail">
+                <div>
+                  <strong>{{ $t(item) }}</strong>
+                  <br/>
+                  <div class="list-item-content">
+                    {{ detail[item] }}
+                  </div>
+                </div>
+            </a-list-item>
+          </template>
         </a-list>
       </a-col>
     </a-row>
@@ -223,7 +225,7 @@ export default {
 </script>
 
 <style scoped>
-/deep/.ant-table-fixed-right {
+:v-deep(.ant-table-fixed-right) {
   z-index: 5;
 }
 

@@ -61,10 +61,10 @@
     <a-list size="large">
       <a-list-item :key="index" v-for="(item, index) in details">
         <a-list-item-meta>
-          <span slot="title">
+          <template #title>
             {{ item.name }}
-          </span>
-          <span slot="description" style="word-break: break-all">
+          </template>
+          <template #description style="word-break: break-all">
             <span v-if="item.edit" style="display: flex">
               <a-auto-complete
                 style="width: 100%"
@@ -74,35 +74,35 @@
                 @pressEnter="e => updateDetail(index)" />
             </span>
             <span v-else>{{ item.value }}</span>
-          </span>
+          </template>
         </a-list-item-meta>
-        <div
-          slot="actions"
-          v-if="!disableSettings && 'updateTemplate' in $store.getters.apis &&
-            'updateVirtualMachine' in $store.getters.apis && isAdminOrOwner() && allowEditOfDetail(item.name)">
-          <tooltip-button :tooltip="$t('label.cancel')" @click="hideEditDetail(index)" v-if="item.edit" iconType="close-circle" iconTwoToneColor="#f5222d" />
-          <tooltip-button :tooltip="$t('label.ok')" @click="updateDetail(index)" v-if="item.edit" iconType="check-circle" iconTwoToneColor="#52c41a" />
-          <tooltip-button
-            :tooltip="$t('label.edit')"
-            icon="edit"
-            :disabled="deployasistemplate === true"
-            v-if="!item.edit"
-            @click="showEditDetail(index)" />
-        </div>
-        <div
-          slot="actions"
-          v-if="!disableSettings && 'updateTemplate' in $store.getters.apis &&
-            'updateVirtualMachine' in $store.getters.apis && isAdminOrOwner() && allowEditOfDetail(item.name)">
-          <a-popconfirm
-            :title="`${$t('label.delete.setting')}?`"
-            @confirm="deleteDetail(index)"
-            :okText="$t('label.yes')"
-            :cancelText="$t('label.no')"
-            placement="left"
-          >
-            <tooltip-button :tooltip="$t('label.delete')" :disabled="deployasistemplate === true" type="danger" icon="delete" />
-          </a-popconfirm>
-        </div>
+        <template #actions>
+          <div
+            v-if="!disableSettings && 'updateTemplate' in $store.getters.apis &&
+              'updateVirtualMachine' in $store.getters.apis && isAdminOrOwner() && allowEditOfDetail(item.name)">
+            <tooltip-button :tooltip="$t('label.cancel')" @click="hideEditDetail(index)" v-if="item.edit" iconType="close-circle" iconTwoToneColor="#f5222d" />
+            <tooltip-button :tooltip="$t('label.ok')" @click="updateDetail(index)" v-if="item.edit" iconType="check-circle" iconTwoToneColor="#52c41a" />
+            <tooltip-button
+              :tooltip="$t('label.edit')"
+              icon="edit"
+              :disabled="deployasistemplate === true"
+              v-if="!item.edit"
+              @click="showEditDetail(index)" />
+          </div>
+          <div
+            v-if="!disableSettings && 'updateTemplate' in $store.getters.apis &&
+              'updateVirtualMachine' in $store.getters.apis && isAdminOrOwner() && allowEditOfDetail(item.name)">
+            <a-popconfirm
+              :title="`${$t('label.delete.setting')}?`"
+              @confirm="deleteDetail(index)"
+              :okText="$t('label.yes')"
+              :cancelText="$t('label.no')"
+              placement="left"
+            >
+              <tooltip-button :tooltip="$t('label.delete')" :disabled="deployasistemplate === true" type="danger" icon="delete" />
+            </a-popconfirm>
+          </div>
+        </template>
       </a-list-item>
     </a-list>
   </a-spin>
@@ -136,7 +136,7 @@ export default {
     }
   },
   watch: {
-    resource: function (newItem, oldItem) {
+    resource: function (newItem) {
       this.updateResource(newItem)
     }
   },
@@ -154,18 +154,17 @@ export default {
       if (!resource) {
         return
       }
-      this.resource = resource
       this.resourceType = this.$route.meta.resourceType
       if (resource.details) {
-        this.details = Object.keys(this.resource.details).map(k => {
-          return { name: k, value: this.resource.details[k], edit: false }
+        this.details = Object.keys(resource.details).map(k => {
+          return { name: k, value: resource.details[k], edit: false }
         })
       }
-      api('listDetailOptions', { resourcetype: this.resourceType, resourceid: this.resource.id }).then(json => {
+      api('listDetailOptions', { resourcetype: this.resourceType, resourceid: resource.id }).then(json => {
         this.detailOptions = json.listdetailoptionsresponse.detailoptions.details
       })
-      this.disableSettings = (this.$route.meta.name === 'vm' && this.resource.state !== 'Stopped')
-      api('listTemplates', { templatefilter: 'all', id: this.resource.templateid }).then(json => {
+      this.disableSettings = (this.$route.meta.name === 'vm' && resource.state !== 'Stopped')
+      api('listTemplates', { templatefilter: 'all', id: resource.templateid }).then(json => {
         this.deployasistemplate = json.listtemplatesresponse.template[0].deployasis
       })
     },
@@ -205,7 +204,7 @@ export default {
     isAdminOrOwner () {
       return ['Admin'].includes(this.$store.getters.userInfo.roletype) ||
         (this.resource.domainid === this.$store.getters.userInfo.domainid && this.resource.account === this.$store.getters.userInfo.account) ||
-        this.resource.project && this.resource.projectid === this.$store.getters.project.id
+        (this.resource.project && this.resource.projectid === this.$store.getters.project.id)
     },
     runApi () {
       var apiName = ''

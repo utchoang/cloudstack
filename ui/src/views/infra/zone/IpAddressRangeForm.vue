@@ -29,10 +29,10 @@
       :columns="columns"
       :pagination="false"
       style="margin-bottom: 24px; width: 100%" >
-      <template slot="actions" slot-scope="text, record">
+      <template #actions="text, record">
         <tooltip-button :tooltip="$t('label.delete')" type="danger" icon="delete" @click="onDelete(record.key)" />
       </template>
-      <template slot="footer">
+      <template #footer>
         <a-form
           :layout="isMobile() ? 'horizontal': 'inline'"
           :form="form"

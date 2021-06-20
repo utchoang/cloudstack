@@ -29,10 +29,10 @@
       :columns="columns"
       :pagination="false"
       style="margin-bottom: 24px; width: 100%">
-      <template slot="name" slot-scope="text, record">
+      <template #name="text, record">
         <a-input :value="text" @change="e => onCellChange(record.key, 'name', e.target.value)" autoFocus />
       </template>
-      <template slot="isolationMethod" slot-scope="text, record">
+      <template #isolationMethod="text, record">
         <a-select
           style="width: 100%"
           :defaultValue="text"
@@ -49,7 +49,7 @@
           <a-select-option value="VCS"> VCS </a-select-option>
         </a-select>
       </template>
-      <template slot="traffics" slot-scope="traffics, record">
+      <template #traffics="traffics, record">
         <div v-for="traffic in traffics" :key="traffic.type">
           <a-tag
             :color="trafficColors[traffic.type]"
@@ -101,10 +101,10 @@
           </a-tag>
         </div>
       </template>
-      <template slot="actions" slot-scope="text, record">
+      <template #actions="text, record">
         <tooltip-button :tooltip="$t('label.delete')" v-if="physicalNetworks.indexOf(record) > 0" type="danger" icon="delete" @click="onDelete(record)" />
       </template>
-      <template slot="footer" v-if="isAdvancedZone">
+      <template #footer v-if="isAdvancedZone">
         <a-button
           @click="handleAddPhysicalNetwork">
           {{ $t('label.add.physical.network') }}

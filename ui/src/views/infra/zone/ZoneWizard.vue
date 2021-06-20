@@ -204,33 +204,33 @@ export default {
       width: 800px;
     }
 
-    /deep/.form-action {
+    :v-deep(.form-action) {
       position: relative;
       margin-top: 16px;
       height: 35px;
     }
 
-    /deep/.button-next {
+    :v-deep(.button-next) {
       position: absolute;
       right: 0;
     }
 
-    /deep/.button-next.ant-btn-loading:not(.ant-btn-circle):not(.ant-btn-circle-outline):not(.ant-btn-icon-only) {
+    :v-deep(.button-next.ant-btn-loading:not(.ant-btn-circle):not(.ant-btn-circle-outline):not(.ant-btn-icon-only)) {
       position: absolute;
       right: 0;
     }
 
-    /deep/.ant-steps {
+    :v-deep(.ant-steps) {
       overflow-x: auto;
       padding: 10px 0;
     }
 
-    /deep/.submit-btn {
+    :v-deep(.submit-btn) {
       display: none;
     }
   }
 
-  /deep/.ant-form-text {
+  :v-deep(.ant-form-text) {
     width: 100%;
   }
 

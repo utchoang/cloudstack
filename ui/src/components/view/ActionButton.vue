@@ -18,7 +18,7 @@
 <template>
   <span class="row-action-button">
     <a-tooltip arrowPointAtCenter placement="bottomRight" v-if="resource && resource.id && dataView">
-      <template slot="title">
+      <template v-slot:title>
         {{ $t('label.view.console') }}
       </template>
       <console :resource="resource" :size="size" />
@@ -28,7 +28,7 @@
       :key="actionIndex"
       arrowPointAtCenter
       placement="bottomRight">
-      <template slot="title">
+      <template v-slot:title>
         {{ $t(action.label) }}
       </template>
       <a-badge
@@ -193,7 +193,7 @@ export default {
   margin-left: 5px;
 }
 
-/deep/.button-action-badge .ant-badge-count {
+:v-deep(.button-action-badge) .ant-badge-count {
   right: 10px;
   z-index: 8;
 }

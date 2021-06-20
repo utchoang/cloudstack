@@ -51,12 +51,12 @@
 </template>
 
 <script>
-import Breadcrumb from '@/components/widgets/Breadcrumb'
+// import Breadcrumb from '@/components/widgets/Breadcrumb'
 
 export default {
   name: 'PageHeader',
   components: {
-    's-breadcrumb': Breadcrumb
+    // 's-breadcrumb': Breadcrumb
   },
   props: {
     title: {

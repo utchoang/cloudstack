@@ -21,7 +21,7 @@
       <a-row>
         <a-col :span="device === 'mobile' ? 24 : 12" style="padding-left: 12px">
           <breadcrumb :resource="resource">
-            <span slot="end">
+            <template v-slot:end>
               <a-button
                 :loading="loading"
                 style="margin-bottom: 5px"
@@ -39,7 +39,7 @@
                 :checked="$store.getters.metrics"
                 @change="(checked, event) => { $store.dispatch('SetMetrics', checked) }"/>
               <a-tooltip placement="right">
-                <template slot="title">
+                <template v-slot:title>
                   {{ $t('label.filterby') }}
                 </template>
                 <a-select
@@ -50,7 +50,7 @@
                     ? 'all' : ['guestnetwork'].includes($route.name) ? 'all' : 'self')"
                   style="min-width: 100px; margin-left: 10px"
                   @change="changeFilter">
-                  <a-icon slot="suffixIcon" type="filter" />
+                  <template v-slot:suffixIcon><FilterOutlined /></template>
                   <a-select-option v-if="['Admin', 'DomainAdmin'].includes($store.getters.userInfo.roletype) && ['vm', 'iso', 'template'].includes($route.name)" key="all">
                     {{ $t('label.all') }}
                   </a-select-option>
@@ -59,7 +59,7 @@
                   </a-select-option>
                 </a-select>
               </a-tooltip>
-            </span>
+            </template>
           </breadcrumb>
         </a-col>
         <a-col
@@ -98,7 +98,7 @@
           centered
           width="auto"
         >
-          <span slot="title">
+          <template v-slot:title>
             {{ $t(currentAction.label) }}
             <a
               v-if="currentAction.docHelp || $route.meta.docHelp"
@@ -107,7 +107,7 @@
               target="_blank">
               <a-icon type="question-circle-o"></a-icon>
             </a>
-          </span>
+          </template>
           <component
             :is="currentAction.component"
             :resource="resource"
@@ -132,7 +132,7 @@
         :confirmLoading="actionLoading"
         centered
       >
-        <span slot="title">
+        <template v-slot:title>
           {{ $t(currentAction.label) }}
           <a
             v-if="currentAction.docHelp || $route.meta.docHelp"
@@ -141,11 +141,11 @@
             target="_blank">
             <a-icon type="question-circle-o"></a-icon>
           </a>
-        </span>
+        </template>
         <a-spin :spinning="actionLoading">
           <span v-if="currentAction.message">
             <a-alert type="warning">
-              <span slot="message" v-html="$t(currentAction.message)" />
+              <template v-slot:message v-html="$t(currentAction.message)" />
             </a-alert>
             <br v-if="currentAction.paramFields.length > 0"/>
           </span>
@@ -153,149 +153,149 @@
             :form="form"
             @submit="handleSubmit"
             layout="vertical" >
-            <a-form-item
-              v-for="(field, fieldIndex) in currentAction.paramFields"
-              :key="fieldIndex"
-              :v-bind="field.name"
-              v-if="!(currentAction.mapping && field.name in currentAction.mapping && currentAction.mapping[field.name].value)"
-            >
-              <span slot="label">
-                {{ $t('label.' + field.name) }}
-                <a-tooltip :title="field.description">
-                  <a-icon type="info-circle" style="color: rgba(0,0,0,.45)" />
-                </a-tooltip>
-              </span>
+            <div v-for="(field, fieldIndex) in currentAction.paramFields" :key="fieldIndex">
+              <a-form-item
+                :v-bind="field.name"
+                v-if="!(currentAction.mapping && field.name in currentAction.mapping && currentAction.mapping[field.name].value)"
+              >
+                <template v-slot:label>
+                  {{ $t('label.' + field.name) }}
+                  <a-tooltip :title="field.description">
+                    <a-icon type="info-circle" style="color: rgba(0,0,0,.45)" />
+                  </a-tooltip>
+                </template>
 
-              <span v-if="field.type==='boolean'">
-                <a-switch
-                  v-decorator="[field.name, {
-                    rules: [{ required: field.required, message: `${$t('message.error.required.input')}` }]
-                  }]"
-                  v-model="formModel[field.name]"
-                  :placeholder="field.description"
-                  :autoFocus="fieldIndex === firstIndex"
-                />
-              </span>
-              <span v-else-if="currentAction.mapping && field.name in currentAction.mapping && currentAction.mapping[field.name].options">
-                <a-select
-                  :loading="field.loading"
-                  v-decorator="[field.name, {
-                    rules: [{ required: field.required, message: `${$t('message.error.select')}` }]
-                  }]"
-                  :placeholder="field.description"
-                  :autoFocus="fieldIndex === firstIndex"
-                >
-                  <a-select-option key="" >{{ }}</a-select-option>
-                  <a-select-option v-for="(opt, optIndex) in currentAction.mapping[field.name].options" :key="optIndex">
-                    {{ opt }}
-                  </a-select-option>
-                </a-select>
-              </span>
-              <span
-                v-else-if="field.name==='keypair' ||
-                  (field.name==='account' && !['addAccountToProject', 'createAccount'].includes(currentAction.api))">
-                <a-select
-                  showSearch
-                  optionFilterProp="children"
-                  v-decorator="[field.name, {
-                    rules: [{ required: field.required, message: `${$t('message.error.select')}` }]
-                  }]"
-                  :loading="field.loading"
-                  :placeholder="field.description"
-                  :filterOption="(input, option) => {
-                    return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                  }"
-                  :autoFocus="fieldIndex === firstIndex"
-                >
-                  <a-select-option key="">{{ }}</a-select-option>
-                  <a-select-option v-for="(opt, optIndex) in field.opts" :key="optIndex">
-                    {{ opt.name || opt.description || opt.traffictype || opt.publicip }}
-                  </a-select-option>
-                </a-select>
-              </span>
-              <span
-                v-else-if="field.type==='uuid'">
-                <a-select
-                  showSearch
-                  optionFilterProp="children"
-                  v-decorator="[field.name, {
-                    rules: [{ required: field.required, message: `${$t('message.error.select')}` }]
-                  }]"
-                  :loading="field.loading"
-                  :placeholder="field.description"
-                  :filterOption="(input, option) => {
-                    return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                  }"
-                  :autoFocus="fieldIndex === firstIndex"
-                >
-                  <a-select-option key="">{{ }}</a-select-option>
-                  <a-select-option v-for="opt in field.opts" :key="opt.id">
-                    {{ opt.name || opt.description || opt.traffictype || opt.publicip }}
-                  </a-select-option>
-                </a-select>
-              </span>
-              <span v-else-if="field.type==='list'">
-                <a-select
-                  :loading="field.loading"
-                  mode="multiple"
-                  v-decorator="[field.name, {
-                    rules: [{ required: field.required, message: `${$t('message.error.select')}` }]
-                  }]"
-                  :placeholder="field.description"
-                  :autoFocus="fieldIndex === firstIndex"
-                >
-                  <a-select-option v-for="(opt, optIndex) in field.opts" :key="optIndex">
-                    {{ opt.name && opt.type ? opt.name + ' (' + opt.type + ')' : opt.name || opt.description }}
-                  </a-select-option>
-                </a-select>
-              </span>
-              <span v-else-if="field.type==='long'">
-                <a-input-number
-                  :autoFocus="fieldIndex === firstIndex"
-                  style="width: 100%;"
-                  v-decorator="[field.name, {
-                    rules: [{ required: field.required, message: `${$t('message.validate.number')}` }]
-                  }]"
-                  :placeholder="field.description"
-                />
-              </span>
-              <span v-else-if="field.name==='password' || field.name==='currentpassword' || field.name==='confirmpassword'">
-                <a-input-password
-                  v-decorator="[field.name, {
-                    rules: [
-                      {
-                        required: field.required,
-                        message: `${$t('message.error.required.input')}`
-                      },
-                      {
-                        validator: validateTwoPassword
-                      }
-                    ]
-                  }]"
-                  :placeholder="field.description"
-                  @blur="($event) => handleConfirmBlur($event, field.name)"
-                  :autoFocus="fieldIndex === firstIndex"
-                />
-              </span>
-              <span v-else-if="field.name==='certificate' || field.name==='privatekey' || field.name==='certchain'">
-                <a-textarea
-                  rows="2"
-                  v-decorator="[field.name, {
-                    rules: [{ required: field.required, message: `${$t('message.error.required.input')}` }]
-                  }]"
-                  :placeholder="field.description"
-                  :autoFocus="fieldIndex === firstIndex"
-                />
-              </span>
-              <span v-else>
-                <a-input
-                  :autoFocus="fieldIndex === firstIndex"
-                  v-decorator="[field.name, {
-                    rules: [{ required: field.required, message: `${$t('message.error.required.input')}` }]
-                  }]"
-                  :placeholder="field.description" />
-              </span>
-            </a-form-item>
+                <span v-if="field.type==='boolean'">
+                  <a-switch
+                    v-decorator="[field.name, {
+                      rules: [{ required: field.required, message: `${$t('message.error.required.input')}` }]
+                    }]"
+                    v-model="formModel[field.name]"
+                    :placeholder="field.description"
+                    :autoFocus="fieldIndex === firstIndex"
+                  />
+                </span>
+                <span v-else-if="currentAction.mapping && field.name in currentAction.mapping && currentAction.mapping[field.name].options">
+                  <a-select
+                    :loading="field.loading"
+                    v-decorator="[field.name, {
+                      rules: [{ required: field.required, message: `${$t('message.error.select')}` }]
+                    }]"
+                    :placeholder="field.description"
+                    :autoFocus="fieldIndex === firstIndex"
+                  >
+                    <a-select-option key="" >{{ }}</a-select-option>
+                    <a-select-option v-for="(opt, optIndex) in currentAction.mapping[field.name].options" :key="optIndex">
+                      {{ opt }}
+                    </a-select-option>
+                  </a-select>
+                </span>
+                <span
+                  v-else-if="field.name==='keypair' ||
+                    (field.name==='account' && !['addAccountToProject', 'createAccount'].includes(currentAction.api))">
+                  <a-select
+                    showSearch
+                    optionFilterProp="children"
+                    v-decorator="[field.name, {
+                      rules: [{ required: field.required, message: `${$t('message.error.select')}` }]
+                    }]"
+                    :loading="field.loading"
+                    :placeholder="field.description"
+                    :filterOption="(input, option) => {
+                      return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    }"
+                    :autoFocus="fieldIndex === firstIndex"
+                  >
+                    <a-select-option key="">{{ }}</a-select-option>
+                    <a-select-option v-for="(opt, optIndex) in field.opts" :key="optIndex">
+                      {{ opt.name || opt.description || opt.traffictype || opt.publicip }}
+                    </a-select-option>
+                  </a-select>
+                </span>
+                <span
+                  v-else-if="field.type==='uuid'">
+                  <a-select
+                    showSearch
+                    optionFilterProp="children"
+                    v-decorator="[field.name, {
+                      rules: [{ required: field.required, message: `${$t('message.error.select')}` }]
+                    }]"
+                    :loading="field.loading"
+                    :placeholder="field.description"
+                    :filterOption="(input, option) => {
+                      return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    }"
+                    :autoFocus="fieldIndex === firstIndex"
+                  >
+                    <a-select-option key="">{{ }}</a-select-option>
+                    <a-select-option v-for="opt in field.opts" :key="opt.id">
+                      {{ opt.name || opt.description || opt.traffictype || opt.publicip }}
+                    </a-select-option>
+                  </a-select>
+                </span>
+                <span v-else-if="field.type==='list'">
+                  <a-select
+                    :loading="field.loading"
+                    mode="multiple"
+                    v-decorator="[field.name, {
+                      rules: [{ required: field.required, message: `${$t('message.error.select')}` }]
+                    }]"
+                    :placeholder="field.description"
+                    :autoFocus="fieldIndex === firstIndex"
+                  >
+                    <a-select-option v-for="(opt, optIndex) in field.opts" :key="optIndex">
+                      {{ opt.name && opt.type ? opt.name + ' (' + opt.type + ')' : opt.name || opt.description }}
+                    </a-select-option>
+                  </a-select>
+                </span>
+                <span v-else-if="field.type==='long'">
+                  <a-input-number
+                    :autoFocus="fieldIndex === firstIndex"
+                    style="width: 100%;"
+                    v-decorator="[field.name, {
+                      rules: [{ required: field.required, message: `${$t('message.validate.number')}` }]
+                    }]"
+                    :placeholder="field.description"
+                  />
+                </span>
+                <span v-else-if="field.name==='password' || field.name==='currentpassword' || field.name==='confirmpassword'">
+                  <a-input-password
+                    v-decorator="[field.name, {
+                      rules: [
+                        {
+                          required: field.required,
+                          message: `${$t('message.error.required.input')}`
+                        },
+                        {
+                          validator: validateTwoPassword
+                        }
+                      ]
+                    }]"
+                    :placeholder="field.description"
+                    @blur="($event) => handleConfirmBlur($event, field.name)"
+                    :autoFocus="fieldIndex === firstIndex"
+                  />
+                </span>
+                <span v-else-if="field.name==='certificate' || field.name==='privatekey' || field.name==='certchain'">
+                  <a-textarea
+                    rows="2"
+                    v-decorator="[field.name, {
+                      rules: [{ required: field.required, message: `${$t('message.error.required.input')}` }]
+                    }]"
+                    :placeholder="field.description"
+                    :autoFocus="fieldIndex === firstIndex"
+                  />
+                </span>
+                <span v-else>
+                  <a-input
+                    :autoFocus="fieldIndex === firstIndex"
+                    v-decorator="[field.name, {
+                      rules: [{ required: field.required, message: `${$t('message.error.required.input')}` }]
+                    }]"
+                    :placeholder="field.description" />
+                </span>
+              </a-form-item>
+            </div>
           </a-form>
         </a-spin>
       </a-modal>
@@ -330,7 +330,7 @@
         @showSizeChange="changePageSize"
         showSizeChanger
         showQuickJumper>
-        <template slot="buildOptionText" slot-scope="props">
+        <template v-slot:buildOptionText="props">
           <span>{{ props.value }} / {{ $t('label.page') }}</span>
         </template>
       </a-pagination>
@@ -408,12 +408,12 @@ export default {
     this.form = this.$form.createForm(this)
   },
   created () {
-    eventBus.$on('vm-refresh-data', () => {
+    eventBus.on('vm-refresh-data', () => {
       if (this.$route.path === '/vm' || this.$route.path.includes('/vm/')) {
         this.fetchData()
       }
     })
-    eventBus.$on('async-job-complete', (action) => {
+    eventBus.on('async-job-complete', (action) => {
       if (this.$route.path.includes('/vm/')) {
         if (action && 'api' in action && ['destroyVirtualMachine'].includes(action.api)) {
           return
@@ -421,7 +421,7 @@ export default {
       }
       this.fetchData()
     })
-    eventBus.$on('exec-action', (action, isGroupAction) => {
+    eventBus.on('exec-action', (action, isGroupAction) => {
       this.execAction(action, isGroupAction)
     })
 
@@ -870,9 +870,6 @@ export default {
                 duration: 0
               })
             }
-          }
-          if ('successMethod' in action) {
-            action.successMethod(this, result)
           }
         },
         errorMethod: () => this.fetchData(),

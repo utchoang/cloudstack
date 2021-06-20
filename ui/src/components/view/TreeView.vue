@@ -17,62 +17,65 @@
 
 <template>
   <resource-layout>
-    <a-spin :spinning="loading" slot="left">
-      <a-card :bordered="false">
-        <a-input-search
-          size="default"
-          :placeholder="$t('label.search')"
-          v-model="searchQuery"
-          @search="onSearch"
-        >
-          <a-icon slot="prefix" type="search" />
-        </a-input-search>
-        <a-spin :spinning="loadingSearch">
-          <a-tree
-            showLine
-            v-if="treeViewData.length > 0"
-            class="list-tree-view"
-            :treeData="treeViewData"
-            :loadData="onLoadData"
-            :expandAction="false"
-            :showIcon="true"
-            :selectedKeys="defaultSelected"
-            :checkStrictly="true"
-            @select="onSelect"
-            @expand="onExpand"
-            :expandedKeys="arrExpand">
-            <a-icon slot="parent" type="folder" />
-            <a-icon slot="leaf" type="block" />
-          </a-tree>
-        </a-spin>
-      </a-card>
-    </a-spin>
-    <a-spin :spinning="detailLoading" slot="right">
-      <a-card
-        class="spin-content"
-        :bordered="true"
-        style="width:100%">
-        <a-tabs
-          style="width: 100%"
-          :animated="false"
-          :defaultActiveKey="tabs[0].name"
-          @change="onTabChange" >
-          <a-tab-pane
-            v-for="tab in tabs"
-            :tab="$t('label.' + tab.name)"
-            :key="tab.name"
-            v-if="checkShowTabDetail(tab)">
-            <component
-              :is="tab.component"
-              :resource="resource"
-              :items="items"
-              :tab="tabActive"
-              :loading="loading"
-              :bordered="false" />
-          </a-tab-pane>
-        </a-tabs>
-      </a-card>
-    </a-spin>
+    <template #left>
+      <a-spin :spinning="loading">
+        <a-card :bordered="false">
+          <a-input-search
+            size="default"
+            :placeholder="$t('label.search')"
+            v-model="searchQuery"
+            @search="onSearch"
+          >
+            <template #prefix><SearchOutlined /></template>
+          </a-input-search>
+          <a-spin :spinning="loadingSearch">
+            <a-tree
+              showLine
+              v-if="treeViewData.length > 0"
+              class="list-tree-view"
+              :treeData="treeViewData"
+              :loadData="onLoadData"
+              :expandAction="false"
+              :showIcon="true"
+              :selectedKeys="defaultSelected"
+              :checkStrictly="true"
+              @select="onSelect"
+              @expand="onExpand"
+              :expandedKeys="arrExpand">
+              <template #parent><SearchOutlined /><FolderOutlined /></template>
+              <template #leaf><SearchOutlined /><BlockOutlined /></template>
+            </a-tree>
+          </a-spin>
+        </a-card>
+      </a-spin>
+    </template>
+    <template #right>
+      <a-spin :spinning="detailLoading">
+        <a-card
+          class="spin-content"
+          :bordered="true"
+          style="width:100%">
+          <a-tabs
+            style="width: 100%"
+            :animated="false"
+            :defaultActiveKey="tabs[0].name"
+            @change="onTabChange" >
+            <div v-for="tab in tabs" :tab="$t('label.' + tab.name)" :key="tab.name">
+              <a-tab-pane
+                v-if="checkShowTabDetail(tab)">
+                <component
+                  :is="tab.component"
+                  :resource="resource"
+                  :items="items"
+                  :tab="tabActive"
+                  :loading="loading"
+                  :bordered="false" />
+              </a-tab-pane>
+            </div>
+          </a-tabs>
+        </a-card>
+      </a-spin>
+    </template>
   </resource-layout>
 </template>
 
@@ -302,17 +305,17 @@ export default {
       this.defaultSelected = []
       this.defaultSelected.push(this.selectedTreeKey)
 
-      this.treeStore.expands = this.arrExpand
-      this.treeStore.selected = this.selectedTreeKey
+      this.$set(this.treeStore, 'expands', this.arrExpand)
+      this.$set(this.treeStore, 'selected', this.selectedTreeKey)
       this.$emit('change-tree-store', this.treeStore)
 
       this.getDetailResource(this.selectedTreeKey)
     },
     onExpand (treeExpand) {
       this.arrExpand = treeExpand
-      this.treeStore.isExpand = true
-      this.treeStore.expands = this.arrExpand
-      this.treeStore.selected = this.selectedTreeKey
+      this.$set(this.treeStore, 'isExpand', true)
+      this.$set(this.treeStore, 'expands', this.arrExpand)
+      this.$set(this.treeStore, 'selected', this.selectedTreeKey)
       this.$emit('change-tree-store', this.treeStore)
     },
     onSearch (value) {

@@ -26,38 +26,40 @@
           :dataSource="dataSource"
           :pagination="false"
           :rowKey="record => record.userid ? record.userid : (record.accountid || record.account)">
-          <span slot="user" slot-scope="text, record" v-if="record.userid">
+          <template v-slot:user="text, record" v-if="record.userid">
             {{ record.username }}
-          </span>
-          <span slot="projectrole" slot-scope="text, record" v-if="record.projectroleid">
+          </template>
+          <template v-slot:projectrole="text, record" v-if="record.projectroleid">
             {{ getProjectRole(record) }}
-          </span>
-          <span v-if="imProjectAdmin && dataSource.length > 1" slot="action" slot-scope="text, record" class="account-button-action">
-            <tooltip-button
-              tooltipPlacement="top"
-              :tooltip="record.userid ? $t('label.make.user.project.owner') : $t('label.make.project.owner')"
-              v-if="record.role !== owner"
-              type="default"
-              icon="arrow-up"
-              size="small"
-              @click="promoteAccount(record)" />
-            <tooltip-button
-              tooltipPlacement="top"
-              :tooltip="record.userid ? $t('label.demote.project.owner.user') : $t('label.demote.project.owner')"
-              v-if="updateProjectApi.params.filter(x => x.name === 'swapowner').length > 0 && record.role === owner"
-              type="default"
-              icon="arrow-down"
-              size="small"
-              @click="demoteAccount(record)" />
-            <tooltip-button
-              tooltipPlacement="top"
-              :tooltip="record.userid ? $t('label.remove.project.user') : $t('label.remove.project.account')"
-              type="danger"
-              icon="delete"
-              size="small"
-              :disabled="!('deleteAccountFromProject' in $store.getters.apis)"
-              @click="onShowConfirmDelete(record)" />
-          </span>
+          </template>
+          <template v-slot:action="text, record" v-if="record.projectroleid">
+            <span v-if="imProjectAdmin && dataSource.length > 1" class="account-button-action">
+              <tooltip-button
+                tooltipPlacement="top"
+                :tooltip="record.userid ? $t('label.make.user.project.owner') : $t('label.make.project.owner')"
+                v-if="record.role !== owner"
+                type="default"
+                icon="arrow-up"
+                size="small"
+                @click="promoteAccount(record)" />
+              <tooltip-button
+                tooltipPlacement="top"
+                :tooltip="record.userid ? $t('label.demote.project.owner.user') : $t('label.demote.project.owner')"
+                v-if="updateProjectApi.params.filter(x => x.name === 'swapowner').length > 0 && record.role === owner"
+                type="default"
+                icon="arrow-down"
+                size="small"
+                @click="demoteAccount(record)" />
+              <tooltip-button
+                tooltipPlacement="top"
+                :tooltip="record.userid ? $t('label.remove.project.user') : $t('label.remove.project.account')"
+                type="danger"
+                icon="delete"
+                size="small"
+                :disabled="!('deleteAccountFromProject' in $store.getters.apis)"
+                @click="onShowConfirmDelete(record)" />
+            </span>
+          </template>
         </a-table>
         <a-pagination
           class="row-element"
@@ -70,7 +72,7 @@
           @change="changePage"
           @showSizeChange="changePageSize"
           showSizeChanger>
-          <template slot="buildOptionText" slot-scope="props">
+          <template v-slot:buildOptionText="props">
             <span>{{ props.value }} / {{ $t('label.page') }}</span>
           </template>
         </a-pagination>
@@ -151,11 +153,10 @@ export default {
   },
   inject: ['parentFetchData'],
   watch: {
-    resource (newItem, oldItem) {
+    resource (newItem) {
       if (!newItem || !newItem.id) {
         return
       }
-      this.resource = newItem
       this.fetchData()
     }
   },
@@ -366,7 +367,7 @@ export default {
 </script>
 
 <style scoped>
-  /deep/.ant-table-fixed-right {
+  :v-deep(.ant-table-fixed-right) {
     z-index: 5;
   }
 

@@ -24,18 +24,20 @@
             v-if="showProject"
             :animated="false"
             @change="onTabChange">
-            <a-tab-pane
+            <div
               v-for="tab in $route.meta.tabs"
-              :tab="$t('label.' + tab.name)"
-              :key="tab.name"
-              v-if="'show' in tab ? tab.show(project, $route, $store.getters.userInfo) : true">
-              <component
-                :is="tab.component"
-                :resource="project"
-                :loading="loading"
-                :bordered="false"
-                :stats="stats" />
-            </a-tab-pane>
+              :key="tab.name">
+              <a-tab-pane
+                :tab="$t('label.' + tab.name)"
+                v-if="'show' in tab ? tab.show(project, $route, $store.getters.userInfo) : true">
+                <component
+                  :is="tab.component"
+                  :resource="project"
+                  :loading="loading"
+                  :bordered="false"
+                  :stats="stats" />
+              </a-tab-pane>
+            </div>
           </a-tabs>
           <a-col
             v-else
@@ -74,7 +76,7 @@
             </router-link>
           </a-button>
         </div>
-        <template slot="footer">
+        <template v-slot:footer>
           <div class="usage-dashboard-chart-footer">
             <a-timeline>
               <a-timeline-item
@@ -110,7 +112,7 @@ export default {
     resource: {
       type: Object,
       default () {
-        return []
+        return {}
       }
     },
     showProject: {
@@ -144,7 +146,7 @@ export default {
     )
   },
   watch: {
-    '$route' (to, from) {
+    '$route' (to) {
       if (to.name === 'dashboard') {
         this.fetchData()
       }

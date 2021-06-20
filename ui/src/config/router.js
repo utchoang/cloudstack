@@ -1,48 +1,15 @@
-// Licensed to the Apache Software Foundation (ASF) under one
-// or more contributor license agreements.  See the NOTICE file
-// distributed with this work for additional information
-// regarding copyright ownership.  The ASF licenses this file
-// to you under the Apache License, Version 2.0 (the
-// "License"); you may not use this file except in compliance
-// with the License.  You may obtain a copy of the License at
-//
-//   http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing,
-// software distributed under the License is distributed on an
-// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-// KIND, either express or implied.  See the License for the
-// specific language governing permissions and limitations
-// under the License.
-
-// eslint-disable-next-line
-import { UserLayout, BasicLayout, RouteView, BlankLayout, PageView } from '@/layouts'
+import { UserLayout, BasicLayout, RouteView } from '@/layouts'
 import AutogenView from '@/views/AutogenView.vue'
-import IFramePlugin from '@/views/plugins/IFramePlugin.vue'
-import Vue from 'vue'
+// import IFramePlugin from '@/views/plugins/IFramePlugin.vue'
 
-import compute from '@/config/section/compute'
-import storage from '@/config/section/storage'
-import network from '@/config/section/network'
-import image from '@/config/section/image'
-import project from '@/config/section/project'
-import event from '@/config/section/event'
-import user from '@/config/section/user'
 import account from '@/config/section/account'
-import domain from '@/config/section/domain'
-import role from '@/config/section/role'
-import infra from '@/config/section/infra'
-import offering from '@/config/section/offering'
-import config from '@/config/section/config'
-import quota from '@/config/section/plugin/quota'
-import cloudian from '@/config/section/plugin/cloudian'
 
 function generateRouterMap (section) {
   var map = {
     name: section.name,
     path: '/' + section.name,
     hidden: section.hidden,
-    meta: { title: section.title, icon: section.icon, docHelp: Vue.prototype.$applyDocHelpMappings(section.docHelp), searchFilters: section.searchFilters },
+    // meta: { title: section.title, icon: section.icon, docHelp: Vue.prototype.$applyDocHelpMappings(section.docHelp), searchFilters: section.searchFilters },
     component: RouteView
   }
 
@@ -63,7 +30,7 @@ function generateRouterMap (section) {
           title: child.title,
           name: child.name,
           icon: child.icon,
-          docHelp: Vue.prototype.$applyDocHelpMappings(child.docHelp),
+          // docHelp: Vue.prototype.$applyDocHelpMappings(child.docHelp),
           permission: child.permission,
           resourceType: child.resourceType,
           filters: child.filters,
@@ -85,7 +52,7 @@ function generateRouterMap (section) {
               title: child.title,
               name: child.name,
               icon: child.icon,
-              docHelp: Vue.prototype.$applyDocHelpMappings(child.docHelp),
+              // docHelp: Vue.prototype.$applyDocHelpMappings(child.docHelp),
               permission: child.permission,
               resourceType: child.resourceType,
               params: child.params ? child.params : {},
@@ -140,7 +107,7 @@ function generateRouterMap (section) {
         title: section.title,
         name: section.name,
         icon: section.icon,
-        docHelp: Vue.prototype.$applyDocHelpMappings(section.docHelp),
+        // docHelp: Vue.prototype.$applyDocHelpMappings(section.docHelp),
         hidden: section.hidden,
         permission: section.permission,
         resourceType: section.resourceType,
@@ -211,21 +178,21 @@ export function asyncRouterMap () {
         component: () => import('@/views/dashboard/Dashboard')
       },
 
-      generateRouterMap(compute),
-      generateRouterMap(storage),
-      generateRouterMap(network),
-      generateRouterMap(image),
-      generateRouterMap(event),
-      generateRouterMap(project),
-      generateRouterMap(user),
-      generateRouterMap(role),
+      // generateRouterMap(compute),
+      // generateRouterMap(storage),
+      // generateRouterMap(network),
+      // generateRouterMap(image),
+      // generateRouterMap(event),
+      // generateRouterMap(project),
+      // generateRouterMap(user),
+      // generateRouterMap(role),
       generateRouterMap(account),
-      generateRouterMap(domain),
-      generateRouterMap(infra),
-      generateRouterMap(offering),
-      generateRouterMap(config),
-      generateRouterMap(quota),
-      generateRouterMap(cloudian),
+      // generateRouterMap(domain),
+      // generateRouterMap(infra),
+      // generateRouterMap(offering),
+      // generateRouterMap(config),
+      // generateRouterMap(quota),
+      // generateRouterMap(cloudian),
 
       {
         path: '/exception',
@@ -264,17 +231,17 @@ export function asyncRouterMap () {
     path: '*', redirect: '/exception/404', hidden: true
   }]
 
-  const plugins = Vue.prototype.$config.plugins
-  if (plugins && plugins.length > 0) {
-    plugins.map(plugin => {
-      routerMap[0].children.push({
-        path: '/plugins/' + plugin.name,
-        name: plugin.name,
-        component: IFramePlugin,
-        meta: { title: plugin.name, icon: plugin.icon, path: plugin.path }
-      })
-    })
-  }
+  // const plugins = Vue.prototype.$config.plugins
+  // if (plugins && plugins.length > 0) {
+  //   plugins.map(plugin => {
+  //     routerMap[0].children.push({
+  //       path: '/plugins/' + plugin.name,
+  //       name: plugin.name,
+  //       component: IFramePlugin,
+  //       meta: { title: plugin.name, icon: plugin.icon, path: plugin.path }
+  //     })
+  //   })
+  // }
 
   return routerMap
 }

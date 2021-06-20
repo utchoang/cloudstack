@@ -58,7 +58,7 @@
 </template>
 
 <script>
-import Breadcrumb from '@/components/widgets/Breadcrumb'
+// import Breadcrumb from '@/components/widgets/Breadcrumb'
 import Logo from '../header/Logo'
 import SMenu from '../menu/'
 import ProjectMenu from '../header/ProjectMenu'
@@ -70,7 +70,7 @@ import { mixin } from '@/utils/mixin.js'
 export default {
   name: 'GlobalHeader',
   components: {
-    Breadcrumb,
+    // Breadcrumb,
     Logo,
     SMenu,
     ProjectMenu,

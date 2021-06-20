@@ -17,7 +17,7 @@
 
 <template>
   <a-popover v-if="enabled && actionsExist" triggers="hover" placement="topLeft">
-    <template slot="content">
+    <template v-slot:content>
       <action-button
         :size="size"
         :actions="actions"

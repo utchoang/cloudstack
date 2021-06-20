@@ -1,53 +1,42 @@
-// Licensed to the Apache Software Foundation (ASF) under one
-// or more contributor license agreements.  See the NOTICE file
-// distributed with this work for additional information
-// regarding copyright ownership.  The ASF licenses this file
-// to you under the Apache License, Version 2.0 (the
-// "License"); you may not use this file except in compliance
-// with the License.  You may obtain a copy of the License at
-//
-//   http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing,
-// software distributed under the License is distributed on an
-// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-// KIND, either express or implied.  See the License for the
-// specific language governing permissions and limitations
-// under the License.
+import { createApp } from 'vue'
+import StoragePlugin from 'vue-web-storage'
 
-import Vue from 'vue'
+import bootstrap from './core/bootstrap'
+import { lazyUsePlugs } from './core/lazy_use'
+import permission from './permission' // permission control
+import './utils/filter' // global filter
+
 import App from './App.vue'
 import router from './router'
 import store from './store'
 import { i18n, loadLanguageAsync } from './locales'
-
-import bootstrap from './core/bootstrap'
-import './core/lazy_use'
-import './core/ext'
-import './permission' // permission control
-import './utils/filter' // global filter
 import { pollJobPlugin, notifierPlugin, toLocaleDatePlugin, configUtilPlugin } from './utils/plugins'
 import { VueAxios } from './utils/request'
+import setting from '@/config/settings'
 
-Vue.config.productionTip = false
-Vue.use(VueAxios, router)
-Vue.use(pollJobPlugin)
-Vue.use(notifierPlugin)
-Vue.use(toLocaleDatePlugin)
+const app = createApp(App)
+app.config.productionTip = false
 
 fetch('config.json').then(response => response.json()).then(config => {
-  Vue.prototype.$config = config
-  Vue.axios.defaults.baseURL = config.apiBase
+  app.config.globalProperties.$config = config
+  app.use(StoragePlugin, setting.storageOptions)
+  // set global localstorage for using
+  window.ls = app.config.globalProperties.$localStorage
 
   loadLanguageAsync().then(() => {
-    new Vue({
-      router,
-      store,
-      i18n,
-      created: bootstrap,
-      render: h => h(App)
-    }).$mount('#app')
+    app.use(store)
+      .use(router)
+      .use(i18n)
+      .use(VueAxios, router)
+      .use(lazyUsePlugs)
+      .use(permission)
+      .use(pollJobPlugin)
+      .use(notifierPlugin)
+      .use(toLocaleDatePlugin)
+      .use(configUtilPlugin)
+      .use(bootstrap)
+      .mount('#app')
+
+    app.config.globalProperties.axios.defaults.baseURL = config.apiBase
   })
 })
-
-Vue.use(configUtilPlugin)

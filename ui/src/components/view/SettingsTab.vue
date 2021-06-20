@@ -26,8 +26,8 @@
     <a-list size="large" class="list" :loading="loading || tabLoading">
       <a-list-item :key="index" v-for="(item, index) in items" class="item">
         <a-list-item-meta>
-          <span slot="title" style="word-break: break-all">{{ item.name }}</span>
-          <span slot="description" style="word-break: break-all">{{ item.description }}</span>
+          <template v-slot:title style="word-break: break-all">{{ item.name }}</template>
+          <template v-slot:description style="word-break: break-all">{{ item.description }}</template>
         </a-list-item-meta>
 
         <div class="item__content">
@@ -45,7 +45,7 @@
           </span>
         </div>
 
-        <div slot="actions" class="action">
+        <template v-slot:actions class="action">
           <tooltip-button
             :tooltip="$t('label.edit')"
             :disabled="!('updateConfiguration' in $store.getters.apis)"
@@ -64,7 +64,7 @@
             v-if="editableValueKey === index"
             iconType="check-circle"
             iconTwoToneColor="#52c41a" />
-        </div>
+        </template>
       </a-list-item>
     </a-list>
   </div>
@@ -127,7 +127,6 @@ export default {
   watch: {
     resource: function (newItem, oldItem) {
       if (!newItem.id) return
-      this.resource = newItem
       this.fetchData()
     }
   },

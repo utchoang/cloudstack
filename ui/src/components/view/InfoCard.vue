@@ -26,7 +26,7 @@
               @click="$message.success(`${$t('label.copied.clipboard')} : ${name}`)"
               v-clipboard:copy="name" >
               <slot name="avatar">
-                <os-logo v-if="resource.ostypeid || resource.ostypename" :osId="resource.ostypeid" :osName="resource.ostypename" size="4x" @update-osname="(name) => this.resource.ostypename = name"/>
+                <os-logo v-if="resource.ostypeid || resource.ostypename" :osId="resource.ostypeid" :osName="resource.ostypename" size="4x" @update-osname="(name) => this.$set(this.resource, 'ostypename', name)"/>
                 <a-icon v-else-if="typeof $route.meta.icon ==='string'" style="font-size: 36px" :type="$route.meta.icon" />
                 <a-icon v-else style="font-size: 36px" :component="$route.meta.icon" />
               </slot>
@@ -73,7 +73,7 @@
                 {{ resource.version }}
               </a-tag>
               <a-tooltip placement="right" >
-                <template slot="title">
+                <template v-slot:title>
                   <span>{{ $t('label.view.console') }}</span>
                 </template>
                 <console style="margin-top: -5px;" :resource="resource" size="default" v-if="resource.id" />
@@ -275,12 +275,13 @@
               </div>
               <div v-else>{{ resource.nic.length }} NIC(s)</div>
               <div
-                v-if="resource.nic"
                 v-for="(eth, index) in resource.nic"
                 :key="eth.id"
                 style="margin-left: -24px; margin-top: 5px;">
-                <a-icon type="api" />eth{{ index }} {{ eth.ipaddress }}
-                <router-link v-if="eth.networkname && eth.networkid" :to="{ path: '/guestnetwork/' + eth.networkid }">({{ eth.networkname }})</router-link>
+                <span v-if="resource.nic">
+                  <a-icon type="api" />eth{{ index }} {{ eth.ipaddress }}
+                  <router-link v-if="eth.networkname && eth.networkid" :to="{ path: '/guestnetwork/' + eth.networkid }">({{ eth.networkname }})</router-link>
+                </span>
               </div>
             </div>
           </div>
@@ -499,8 +500,8 @@
           <div class="resource-detail-item__label">{{ $t('label.owners') }}</div>
           <div class="resource-detail-item__details">
             <a-icon type="user" />
-            <template v-for="(item,idx) in resource.owner">
-              <span style="margin-right:5px" :key="idx">
+            <template v-for="(item, idx) in resource.owner" :key="idx">
+              <span style="margin-right:5px">
                 <span v-if="$store.getters.userInfo.roletype !== 'User'">
                   <router-link v-if="'user' in item" :to="{ path: '/accountuser', query: { username: item.user, domainid: resource.domainid }}">{{ item.account + '(' + item.user + ')' }}</router-link>
                   <router-link v-else :to="{ path: '/account', query: { name: item.account, domainid: resource.domainid } }">{{ item.account }}</router-link>
@@ -606,8 +607,8 @@
         <a-spin :spinning="loadingTags">
           <div class="title">{{ $t('label.tags') }}</div>
           <div>
-            <template v-for="(tag, index) in tags">
-              <a-tag :key="index" :closable="isAdminOrOwner() && 'deleteTags' in $store.getters.apis" :afterClose="() => handleDeleteTag(tag)">
+            <template v-for="(tag, index) in tags" :key="index">
+              <a-tag :closable="isAdminOrOwner() && 'deleteTags' in $store.getters.apis" :afterClose="() => handleDeleteTag(tag)">
                 {{ tag.key }} = {{ tag.value }}
               </a-tag>
             </template>
@@ -644,29 +645,33 @@
             :dataSource="notes"
             itemLayout="horizontal"
             size="small" >
-            <a-list-item slot="renderItem" slot-scope="item">
-              <a-comment
-                :content="item.annotation"
-                :datetime="$toLocaleDate(item.created)" >
-                <a-button
-                  v-if="'removeAnnotation' in $store.getters.apis"
-                  slot="avatar"
-                  type="danger"
-                  shape="circle"
-                  size="small"
-                  @click="deleteNote(item)">
-                  <a-icon type="delete"/>
-                </a-button>
-              </a-comment>
-            </a-list-item>
+            <template v-slot:renderItem="item">
+              <a-list-item>
+                <a-comment
+                  :content="item.annotation"
+                  :datetime="$toLocaleDate(item.created)" >
+                  <template v-slot:avatar>
+                    <a-button
+                      v-if="'removeAnnotation' in $store.getters.apis"
+                      type="danger"
+                      shape="circle"
+                      size="small"
+                      @click="deleteNote(item)">
+                      <DeleteOutlined />
+                    </a-button>
+                  </template>
+                </a-comment>
+              </a-list-item>
+            </template>
           </a-list>
 
           <a-comment v-if="'addAnnotation' in $store.getters.apis">
+            <template v-slot:avatar>
             <a-avatar
-              slot="avatar"
               icon="edit"
               @click="showNotesInput = true" />
-            <div slot="content">
+            </template>
+            <template v-slot:content>
               <a-textarea
                 rows="4"
                 @change="handleNoteChange"
@@ -679,7 +684,7 @@
               >
                 {{ $t('label.save') }}
               </a-button>
-            </div>
+            </template>
           </a-comment>
         </a-spin>
       </div>
@@ -739,8 +744,7 @@ export default {
     }
   },
   watch: {
-    resource: function (newItem, oldItem) {
-      this.resource = newItem
+    resource: function () {
       this.resourceType = this.$route.meta.resourceType
       this.annotationType = ''
       this.showKeys = false
@@ -817,7 +821,7 @@ export default {
       }
       api('getUserKeys', { id: this.resource.id }).then(json => {
         this.showKeys = true
-        this.resource.secretkey = json.getuserkeysresponse.userkeys.secretkey
+        this.$set(this.resource, 'secretkey', json.getuserkeysresponse.userkeys.secretkey)
       })
     },
     getTags () {
@@ -859,7 +863,7 @@ export default {
     isAdminOrOwner () {
       return ['Admin'].includes(this.$store.getters.userInfo.roletype) ||
         (this.resource.domainid === this.$store.getters.userInfo.domainid && this.resource.account === this.$store.getters.userInfo.account) ||
-        this.resource.project && this.resource.projectid === this.$store.getters.project.id
+        (this.resource.project && this.resource.projectid === this.$store.getters.project.id)
     },
     showInput () {
       this.inputVisible = true
@@ -935,7 +939,7 @@ export default {
 
 <style lang="scss" scoped>
 
-/deep/ .ant-card-body {
+:v-deep(.ant-card-body) {
   padding: 30px;
 }
 
