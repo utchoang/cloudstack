@@ -22,7 +22,7 @@
         <info-card :resource="resource" :loading="loading" />
       </slot>
     </template>
-    <a-spin :spinning="loading">
+    <!-- <a-spin :spinning="loading">
       <template v-slot:right>
         <a-card
           class="spin-content"
@@ -50,12 +50,12 @@
           </a-tabs>
         </a-card>
       </template>
-    </a-spin>
+    </a-spin> -->
   </resource-layout>
 </template>
 
 <script>
-import DetailsTab from '@/components/view/DetailsTab'
+// import DetailsTab from '@/components/view/DetailsTab'
 import InfoCard from '@/components/view/InfoCard'
 import ResourceLayout from '@/layouts/ResourceLayout'
 import { api } from '@/api'
@@ -81,8 +81,8 @@ export default {
       type: Array,
       default: function () {
         return [{
-          name: 'details',
-          component: DetailsTab
+          name: 'details'
+          // component: DetailsTab
         }]
       }
     },

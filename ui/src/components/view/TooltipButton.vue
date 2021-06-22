@@ -25,10 +25,10 @@
       :size="size"
       :type="type"
       :disabled="disabled"
-      :icon="icon"
       :class="buttonClass"
       :loading="loading"
       @click="handleClicked()" >
+      <template #icon><render-icon :icon="icon" /></template>
       <a-icon
         v-if="iconType && iconTwoToneColor"
         :type="iconType"
@@ -39,9 +39,11 @@
 </template>
 
 <script>
+import RenderIcon from '@/utils/renderIcon'
 
 export default {
   name: 'TooltipButton',
+  components: { RenderIcon },
   props: {
     tooltip: {
       type: String,

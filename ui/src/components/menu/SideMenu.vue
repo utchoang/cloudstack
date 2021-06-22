@@ -20,7 +20,7 @@
     :class="['sider', isDesktop() ? null : 'shadow', theme, fixSiderbar ? 'ant-fixed-sidemenu' : null ]"
     width="256px"
     :collapsible="collapsible"
-    v-model="isCollaped"
+    v-model:collapsed="isCollaped"
     :trigger="null">
     <logo />
     <s-menu
@@ -34,14 +34,13 @@
 </template>
 
 <script>
-import ALayoutSider from 'ant-design-vue/es/layout/Sider'
 import Logo from '../header/Logo'
 import SMenu from './index'
 import { mixin, mixinDevice } from '@/utils/mixin.js'
 
 export default {
   name: 'SideMenu',
-  components: { ALayoutSider, Logo, SMenu },
+  components: { Logo, SMenu },
   mixins: [mixin, mixinDevice],
   props: {
     mode: {
@@ -69,9 +68,9 @@ export default {
       required: true
     }
   },
-  data () {
-    return {
-      isCollaped: this.collapsed
+  computed: {
+    isCollaped () {
+      return this.collapsed
     }
   },
   methods: {
@@ -89,23 +88,23 @@ export default {
   z-index: 10;
   height: auto;
 
-  /deep/ .ant-layout-sider-children {
+  :v-deep(.ant-layout-sider-children) {
     overflow-y: hidden;
     &:hover {
       overflow-y: auto;
     }
   }
 
-  /deep/ .ant-menu-vertical .ant-menu-item {
+  :v-deep(.ant-menu-vertical) .ant-menu-item {
     margin-top: 0px;
     margin-bottom: 0px;
   }
 
-  /deep/ .ant-menu-inline .ant-menu-item:not(:last-child) {
+  :v-deep(.ant-menu-inline) .ant-menu-item:not(:last-child) {
     margin-bottom: 0px;
   }
 
-  /deep/ .ant-menu-inline .ant-menu-item {
+  :v-deep(.ant-menu-inline) .ant-menu-item {
     margin-top: 0px;
   }
 

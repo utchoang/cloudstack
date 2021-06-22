@@ -18,7 +18,7 @@
 export default {
   name: 'account',
   title: 'label.accounts',
-  icon: 'team',
+  icon: 'TeamOutlined',
   docHelp: 'adminguide/accounts.html',
   permission: ['listAccounts'],
   columns: ['name', 'state', 'rolename', 'roletype', 'domainpath'],
@@ -55,7 +55,7 @@ export default {
   actions: [
     {
       api: 'createAccount',
-      icon: 'plus',
+      icon: 'PlusOutlined',
       label: 'label.add.account',
       listView: true,
       popup: true,
@@ -63,7 +63,7 @@ export default {
     },
     {
       api: 'ldapCreateAccount',
-      icon: 'user-add',
+      icon: 'UserAddOutlined',
       label: 'label.add.ldap.account',
       docHelp: 'adminguide/accounts.html#using-an-ldap-server-for-user-authentication',
       listView: true,
@@ -75,7 +75,7 @@ export default {
     },
     {
       api: 'updateAccount',
-      icon: 'edit',
+      icon: 'EditOutlined',
       label: 'label.action.edit.account',
       dataView: true,
       args: ['newname', 'account', 'domainid', 'networkdomain'],
@@ -90,7 +90,7 @@ export default {
     },
     {
       api: 'updateResourceCount',
-      icon: 'sync',
+      icon: 'SyncOutlined',
       label: 'label.action.update.resource.count',
       message: 'message.update.resource.count',
       dataView: true,
@@ -107,7 +107,7 @@ export default {
     },
     {
       api: 'enableAccount',
-      icon: 'play-circle',
+      icon: 'PlayCircleOutlined',
       label: 'label.action.enable.account',
       message: 'message.enable.account',
       dataView: true,
@@ -120,7 +120,7 @@ export default {
     },
     {
       api: 'disableAccount',
-      icon: 'pause-circle',
+      icon: 'PauseCircleOutlined',
       label: 'label.action.disable.account',
       message: 'message.disable.account',
       dataView: true,
@@ -138,7 +138,7 @@ export default {
     },
     {
       api: 'disableAccount',
-      icon: 'lock',
+      icon: 'LockOutlined',
       label: 'label.action.lock.account',
       message: 'message.lock.account',
       dataView: true,
@@ -156,7 +156,7 @@ export default {
     },
     {
       api: 'uploadSslCert',
-      icon: 'safety-certificate',
+      icon: 'SafetyCertificateOutlined',
       label: 'label.add.certificate',
       dataView: true,
       args: ['name', 'certificate', 'privatekey', 'certchain', 'password', 'account', 'domainid'],
@@ -173,7 +173,7 @@ export default {
     },
     {
       api: 'deleteAccount',
-      icon: 'delete',
+      icon: 'DeleteOutlined',
       label: 'label.action.delete.account',
       message: 'message.delete.account',
       dataView: true,

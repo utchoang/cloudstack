@@ -31,8 +31,8 @@
             <span>{{ $t('label.domain') }}</span>
           </template>
           <span style="font-size: 20px; color: #999; margin-top: -5px">
-            <a-icon v-if="!loading" type="block" />
-            <a-icon v-else type="loading" />
+            <BlockOutlined v-if="!loading" />
+            <LoadingOutlined v-else />
           </span>
         </a-tooltip>
       </template>

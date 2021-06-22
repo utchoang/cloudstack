@@ -34,8 +34,8 @@
             <span>{{ $t('label.projects') }}</span>
           </template>
           <span style="font-size: 20px; color: #999; margin-top: -5px">
-            <a-icon v-if="!loading" type="project" />
-            <a-icon v-else type="loading" />
+            <ProjectOutlined v-if="!loading" />
+            <LoadingOutlined v-else />
           </span>
         </a-tooltip>
       </template>

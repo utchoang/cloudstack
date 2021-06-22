@@ -2,7 +2,7 @@ import { createApp } from 'vue'
 import StoragePlugin from 'vue-web-storage'
 
 import bootstrap from './core/bootstrap'
-import { lazyUsePlugs } from './core/lazy_use'
+import lazyUsePlugs from './core/lazy_use'
 import permission from './permission' // permission control
 import './utils/filter' // global filter
 
@@ -20,15 +20,16 @@ app.config.productionTip = false
 fetch('config.json').then(response => response.json()).then(config => {
   app.config.globalProperties.$config = config
   app.use(StoragePlugin, setting.storageOptions)
-  // set global localstorage for using
+  // set global localStorage for using
   window.ls = app.config.globalProperties.$localStorage
+  window.appPrototype = app.config.globalProperties
 
   loadLanguageAsync().then(() => {
     app.use(store)
-      .use(router)
-      .use(i18n)
       .use(VueAxios, router)
       .use(lazyUsePlugs)
+      .use(router)
+      .use(i18n)
       .use(permission)
       .use(pollJobPlugin)
       .use(notifierPlugin)

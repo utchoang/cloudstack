@@ -22,10 +22,9 @@
         <div class="capacity-dashboard-select">
           <a-select
             showSearch
-            optionFilterProp="children"
             :defaultValue="zoneSelected.name"
             :placeholder="$t('label.select.a.zone')"
-            :value="zoneSelected.name"
+            v-model:value="zoneSelected.name"
             @change="changeZone">
             <a-select-option v-for="(zone, index) in zones" :key="index">
               {{ zone.name }}
@@ -61,7 +60,9 @@
                   :width="100" />
               </div>
             </router-link>
-            <template v-slot:footer><center>{{ displayData(stat.name, stat.capacityused) }} / {{ displayData(stat.name, stat.capacitytotal) }}</center></template>
+            <template v-slot:footer>
+              <center>{{ displayData(stat.name, stat.capacityused) }} / {{ displayData(stat.name, stat.capacitytotal) }}</center>
+            </template>
           </chart-card>
         </a-col>
       </a-row>
@@ -76,7 +77,7 @@
             </template>
             <a-button type="danger" shape="circle">
               <router-link :to="{ name: 'host', query: {'state': 'Alert'} }">
-                <a-icon class="capacity-dashboard-button-icon" type="desktop" />
+                <DesktopOutlined class="capacity-dashboard-button-icon" />
               </router-link>
             </a-button>
           </a-tooltip>
@@ -86,7 +87,7 @@
             </template>
             <a-button shape="circle">
               <router-link :to="{ name: 'alert' }">
-                <a-icon class="capacity-dashboard-button-icon" type="flag" />
+                <FlagOutlined class="capacity-dashboard-button-icon" />
               </router-link>
             </a-button>
           </a-tooltip>
@@ -96,7 +97,7 @@
             </template>
             <a-button shape="circle">
               <router-link :to="{ name: 'event' }">
-                <a-icon class="capacity-dashboard-button-icon" type="schedule" />
+                <ScheduleOutlined class="capacity-dashboard-button-icon" />
               </router-link>
             </a-button>
           </a-tooltip>

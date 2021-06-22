@@ -16,7 +16,7 @@
 // under the License.
 
 import Menu from 'ant-design-vue/es/menu'
-import Icon from 'ant-design-vue/es/icon'
+import RenderIcon from '@/utils/renderIcon'
 
 const { Item, SubMenu } = Menu
 
@@ -118,13 +118,9 @@ export default {
     },
     renderMenuItem (menu) {
       const target = menu.meta.target || null
-      const props = {
-        to: { name: menu.name },
-        target: target
-      }
       return (
         <Item {...{ key: menu.path }}>
-          <router-link {...{ props }}>
+          <router-link {...{ to: { name: menu.name, target: target } }}>
             {this.renderIcon(menu.meta.icon, menu)}
             <span>{this.$t(menu.meta.title)}</span>
           </router-link>
@@ -133,21 +129,11 @@ export default {
     },
     renderSubMenu (menu) {
       const itemArr = []
-      const on = {
-        click: () => {
-          this.handleClickParentMenu(menu)
-        }
-      }
       if (!menu.hideChildrenInMenu) {
         menu.children.forEach(item => itemArr.push(this.renderItem(item)))
       }
       return (
         <SubMenu {...{ key: menu.path }}>
-          <span slot="title">
-            {this.renderIcon(menu.meta.icon, menu)}
-            <span {...{ on: on }}>{this.$t(menu.meta.title)}</span>
-          </span>
-          {itemArr}
         </SubMenu>
       )
     },
@@ -161,9 +147,9 @@ export default {
           this.handleClickParentMenu(menuItem)
         }
       }
-      typeof (icon) === 'object' ? props.component = icon : props.type = icon
+      typeof (icon) === 'object' ? props.component = icon : props.type = { icon }
       return (
-        <Icon {... { props, on } } />
+        <RenderIcon {...{ icon, props, event: on }} />
       )
     },
     handleClickParentMenu (menuItem) {

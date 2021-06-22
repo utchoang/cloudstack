@@ -18,7 +18,7 @@
 <template>
   <a-dropdown>
     <span class="action ant-dropdown-link translation-menu">
-      <font-awesome-icon :icon="['fas', 'language']" size="lg" />
+      <TranslationOutlined />
     </span>
     <template v-slot:overlay>
       <a-menu
@@ -62,7 +62,7 @@ export default {
   },
   mounted () {
     this.language = this.$localStorage.get('LOCALE') || 'en'
-    this.setLocale(this.language)
+    // this.setLocale(this.language)
   },
   methods: {
     moment,
@@ -74,10 +74,10 @@ export default {
       this.setLocale(localeValue)
     },
     setLocale (localeValue) {
-      this.$locale = localeValue
-      this.$i18n.global.locale = localeValue
+      // this.$locale = localeValue
+      this.$i18n.locale = localeValue
       this.language = localeValue
-      moment.locale(localeValue)
+      // // moment.locale(localeValue)
       this.$localStorage.set('LOCALE', localeValue)
       loadLanguageAsync(localeValue)
     }

@@ -507,7 +507,7 @@ export default {
   }
 
   .traffic-select-item {
-    /deep/.icon-button {
+    :v-deep(.icon-button) {
       margin: 0 0 0 5px;
     }
   }

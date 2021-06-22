@@ -26,7 +26,7 @@
         <div class="link">
           <template v-for="(link, index) in linkList" :key="index">
             <a :href="link.href">
-              <a-icon :type="link.icon"/>
+              <render-icon v-if="index == 0" :icon="link.icon" />
               <span>{{ link.title }}</span>
             </a>
           </template>
@@ -54,11 +54,14 @@
 </template>
 
 <script>
+import RenderIcon from '@/utils/renderIcon'
+
 import PageHeader from './PageHeader'
 
 export default {
   name: 'LayoutContent',
   components: {
+    RenderIcon,
     PageHeader
   },
   // ['desc', 'logo', 'title', 'avatar', 'linkList', 'extraImage']

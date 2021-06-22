@@ -42,7 +42,7 @@
     </template>
     <span @click="showNotifications" class="header-notice-opener">
       <a-badge :count="jobs.length">
-        <a-icon class="header-notice-icon" type="bell" />
+        <BellOutlined class="header-notice-icon" />
       </a-badge>
     </span>
   </a-popover>

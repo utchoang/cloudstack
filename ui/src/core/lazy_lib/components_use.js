@@ -97,7 +97,7 @@ export default {
     app.use(Progress)
     app.use(Skeleton)
     app.use(Popconfirm)
-    app.use(notification)
+    // app.use(Notification)
     app.use(Affix)
     app.use(Timeline)
     app.use(Pagination)

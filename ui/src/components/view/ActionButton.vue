@@ -41,15 +41,15 @@
             (dataView && action.dataView && ('show' in action ? action.show(resource, $store.getters) : true))
           )" >
         <a-button
-          :type="action.icon === 'delete' ? 'danger' : (action.icon === 'plus' ? 'primary' : 'default')"
-          :shape="!dataView && action.icon === 'plus' ? 'round' : 'circle'"
+          :type="action.icon === 'DeleteOutlined' ? 'danger' : (action.icon === 'plus' ? 'primary' : 'default')"
+          :shape="!dataView && action.icon === 'PlusOutlined' ? 'round' : 'circle'"
           style="margin-left: 5px"
           :size="size"
           @click="execAction(action)">
-          <span v-if="!dataView && action.icon === 'plus'">
+          <span v-if="!dataView && action.icon === 'PlusOutlined'">
             {{ $t(action.label) }}
           </span>
-          <a-icon v-if="(typeof action.icon === 'string')" :type="action.icon" />
+          <render-icon v-if="(typeof action.icon === 'string')" :icon="action.icon" />
           <font-awesome-icon v-else :icon="action.icon" />
         </a-button>
       </a-badge>
@@ -59,15 +59,15 @@
             (!dataView && ((action.listView && ('show' in action ? action.show(resource, $store.getters) : true)) || (action.groupAction && selectedRowKeys.length > 0 && ('groupShow' in action ? action.show(resource, $store.getters) : true)))) ||
             (dataView && action.dataView && ('show' in action ? action.show(resource, $store.getters) : true))
           )"
-        :type="action.icon === 'delete' ? 'danger' : (action.icon === 'plus' ? 'primary' : 'default')"
-        :shape="!dataView && ['plus', 'user-add'].includes(action.icon) ? 'round' : 'circle'"
+        :type="action.icon === 'DeleteOutlined' ? 'danger' : (action.icon === 'PlusOutlined' ? 'primary' : 'default')"
+        :shape="!dataView && ['PlusOutlined', 'UserAddOutlined'].includes(action.icon) ? 'round' : 'circle'"
         style="margin-left: 5px"
         :size="size"
         @click="execAction(action)">
-        <span v-if="!dataView && ['plus', 'user-add'].includes(action.icon)">
+        <span v-if="!dataView && ['PlusOutlined', 'UserAddOutlined'].includes(action.icon)">
           {{ $t(action.label) }}
         </span>
-        <a-icon v-if="(typeof action.icon === 'string')" :type="action.icon" />
+        <render-icon v-if="(typeof action.icon === 'string')" :icon="action.icon" />
         <font-awesome-icon v-else :icon="action.icon" />
       </a-button>
     </a-tooltip>
@@ -76,11 +76,13 @@
 
 <script>
 import { api } from '@/api'
+import RenderIcon from '@/utils/renderIcon'
 import Console from '@/components/widgets/Console'
 
 export default {
   name: 'ActionButton',
   components: {
+    RenderIcon,
     Console
   },
   data () {

@@ -19,11 +19,11 @@
   <span :style="styleSearch">
     <span v-if="!searchFilters || searchFilters.length === 0" style="display: flex;">
       <a-input-search
-        style="width: 100%; display: table-cell"
+        v-model:value="searchQuery"
         :placeholder="$t('label.search')"
-        v-model="searchQuery"
         allowClear
-        @search="onSearch" />
+        @search="onSearch"
+      />
     </span>
 
     <span
@@ -33,7 +33,7 @@
         allowClear
         class="input-search"
         :placeholder="$t('label.search')"
-        v-model="searchQuery"
+        v-model:value="searchQuery"
         @search="onSearch">
         <template v-slot:addonBefore>
           <a-popover
@@ -43,7 +43,8 @@
             <template v-slot:content v-if="visibleFilter">
               <a-form
                 style="min-width: 170px"
-                :form="form"
+                :model="form"
+                :rules="rules"
                 layout="vertical"
                 @submit="handleSubmit">
                 <a-form-item
@@ -53,9 +54,7 @@
                   <a-select
                     allowClear
                     v-if="field.type==='list'"
-                    v-decorator="[field.name, {
-                      initialValue: fieldValues[field.name] || null
-                    }]"
+                    v-model:value="form[field.name]"
                     :loading="field.loading">
                     <a-select-option
                       v-for="(opt, idx) in field.opts"
@@ -64,9 +63,7 @@
                   </a-select>
                   <a-input
                     v-else-if="field.type==='input'"
-                    v-decorator="[field.name, {
-                      initialValue: fieldValues[field.name] || null
-                    }]" />
+                    v-model:value="form[field.name]" />
                   <div v-else-if="field.type==='tag'">
                     <div>
                       <a-input-group
@@ -112,10 +109,13 @@
 </template>
 
 <script>
+import { reactive } from 'vue'
 import { api } from '@/api'
+import TooltipButton from '@/components/view/TooltipButton.vue'
 
 export default {
   name: 'SearchView',
+  components: { TooltipButton },
   props: {
     searchFilters: {
       type: Array,
@@ -144,7 +144,8 @@ export default {
     }
   },
   beforeCreate () {
-    this.form = this.$form.createForm(this)
+    this.form = reactive({})
+    this.rules = reactive({})
   },
   watch: {
     visibleFilter (newValue, oldValue) {
@@ -474,7 +475,7 @@ export default {
 }
 
 .filter-group {
-  /deep/.ant-input-group-addon {
+  :v-deep(.ant-input-group-addon) {
     padding: 0 5px;
   }
 
@@ -500,7 +501,7 @@ export default {
     }
   }
 
-  /deep/.ant-input-group {
+  :v-deep(.ant-input-group) {
     .ant-input-affix-wrapper {
       width: calc(100% - 10px);
     }

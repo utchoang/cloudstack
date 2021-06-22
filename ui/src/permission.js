@@ -58,7 +58,9 @@ export default {
               .dispatch('GetInfo')
               .then(apis => {
                 store.dispatch('GenerateRoutes', { apis }).then(() => {
-                  router.addRoutes(store.getters.addRouters)
+                  store.getters.addRouters.map(route => {
+                    router.addRoute(route)
+                  })
                   const redirect = decodeURIComponent(from.query.redirect || to.path)
                   if (to.path === redirect) {
                     next({ ...to, replace: true })
@@ -70,7 +72,7 @@ export default {
               .catch(() => {
                 notification.error({
                   message: 'Error',
-                  description: i18n.t('message.error.discovering.feature'),
+                  description: i18n.global.t('message.error.discovering.feature'),
                   duration: 0
                 })
                 store.dispatch('Logout').then(() => {

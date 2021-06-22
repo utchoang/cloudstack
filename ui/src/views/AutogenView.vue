@@ -99,7 +99,7 @@
           width="auto"
         >
           <template v-slot:title>
-            {{ $t(currentAction.label) }}
+            {{ currentAction.label }}
             <a
               v-if="currentAction.docHelp || $route.meta.docHelp"
               style="margin-left: 5px"
@@ -120,7 +120,6 @@
         </a-modal>
       </keep-alive>
       <a-modal
-        v-else
         :visible="showAction"
         :closable="true"
         :maskClosable="false"
@@ -133,7 +132,7 @@
         centered
       >
         <template v-slot:title>
-          {{ $t(currentAction.label) }}
+          {{ currentAction.label }}
           <a
             v-if="currentAction.docHelp || $route.meta.docHelp"
             style="margin-left: 5px"
@@ -150,12 +149,14 @@
             <br v-if="currentAction.paramFields.length > 0"/>
           </span>
           <a-form
-            :form="form"
+            :model="form"
+            :rules="rules"
             @submit="handleSubmit"
             layout="vertical" >
             <div v-for="(field, fieldIndex) in currentAction.paramFields" :key="fieldIndex">
               <a-form-item
                 :v-bind="field.name"
+                :name="field.name"
                 v-if="!(currentAction.mapping && field.name in currentAction.mapping && currentAction.mapping[field.name].value)"
               >
                 <template v-slot:label>
@@ -167,10 +168,7 @@
 
                 <span v-if="field.type==='boolean'">
                   <a-switch
-                    v-decorator="[field.name, {
-                      rules: [{ required: field.required, message: `${$t('message.error.required.input')}` }]
-                    }]"
-                    v-model="formModel[field.name]"
+                    v-model:value="form[field.name]"
                     :placeholder="field.description"
                     :autoFocus="fieldIndex === firstIndex"
                   />
@@ -178,9 +176,7 @@
                 <span v-else-if="currentAction.mapping && field.name in currentAction.mapping && currentAction.mapping[field.name].options">
                   <a-select
                     :loading="field.loading"
-                    v-decorator="[field.name, {
-                      rules: [{ required: field.required, message: `${$t('message.error.select')}` }]
-                    }]"
+                    v-model:value="form[field.name]"
                     :placeholder="field.description"
                     :autoFocus="fieldIndex === firstIndex"
                   >
@@ -196,9 +192,7 @@
                   <a-select
                     showSearch
                     optionFilterProp="children"
-                    v-decorator="[field.name, {
-                      rules: [{ required: field.required, message: `${$t('message.error.select')}` }]
-                    }]"
+                    v-model:value="form[field.name]"
                     :loading="field.loading"
                     :placeholder="field.description"
                     :filterOption="(input, option) => {
@@ -217,9 +211,7 @@
                   <a-select
                     showSearch
                     optionFilterProp="children"
-                    v-decorator="[field.name, {
-                      rules: [{ required: field.required, message: `${$t('message.error.select')}` }]
-                    }]"
+                    v-model:value="form[field.name]"
                     :loading="field.loading"
                     :placeholder="field.description"
                     :filterOption="(input, option) => {
@@ -237,9 +229,7 @@
                   <a-select
                     :loading="field.loading"
                     mode="multiple"
-                    v-decorator="[field.name, {
-                      rules: [{ required: field.required, message: `${$t('message.error.select')}` }]
-                    }]"
+                    v-model:value="form[field.name]"
                     :placeholder="field.description"
                     :autoFocus="fieldIndex === firstIndex"
                   >
@@ -252,25 +242,13 @@
                   <a-input-number
                     :autoFocus="fieldIndex === firstIndex"
                     style="width: 100%;"
-                    v-decorator="[field.name, {
-                      rules: [{ required: field.required, message: `${$t('message.validate.number')}` }]
-                    }]"
+                    v-model:value="form[field.name]"
                     :placeholder="field.description"
                   />
                 </span>
                 <span v-else-if="field.name==='password' || field.name==='currentpassword' || field.name==='confirmpassword'">
                   <a-input-password
-                    v-decorator="[field.name, {
-                      rules: [
-                        {
-                          required: field.required,
-                          message: `${$t('message.error.required.input')}`
-                        },
-                        {
-                          validator: validateTwoPassword
-                        }
-                      ]
-                    }]"
+                    v-model:value="form[field.name]"
                     :placeholder="field.description"
                     @blur="($event) => handleConfirmBlur($event, field.name)"
                     :autoFocus="fieldIndex === firstIndex"
@@ -279,9 +257,7 @@
                 <span v-else-if="field.name==='certificate' || field.name==='privatekey' || field.name==='certchain'">
                   <a-textarea
                     rows="2"
-                    v-decorator="[field.name, {
-                      rules: [{ required: field.required, message: `${$t('message.error.required.input')}` }]
-                    }]"
+                    v-model:value="form[field.name]"
                     :placeholder="field.description"
                     :autoFocus="fieldIndex === firstIndex"
                   />
@@ -289,9 +265,7 @@
                 <span v-else>
                   <a-input
                     :autoFocus="fieldIndex === firstIndex"
-                    v-decorator="[field.name, {
-                      rules: [{ required: field.required, message: `${$t('message.error.required.input')}` }]
-                    }]"
+                    v-model:value="form[field.name]"
                     :placeholder="field.description" />
                 </span>
               </a-form-item>
@@ -317,7 +291,7 @@
         :actions="actions"
         ref="listview"
         @selection-change="onRowSelectionChange"
-        @refresh="this.fetchData" />
+        @refresh="fetchData" />
       <a-pagination
         class="row-element"
         size="small"
@@ -339,6 +313,7 @@
 </template>
 
 <script>
+import { reactive } from 'vue'
 import { api } from '@/api'
 import { mixinDevice } from '@/utils/mixin.js'
 import { genericCompare } from '@/utils/sort.js'
@@ -346,8 +321,6 @@ import store from '@/store'
 import eventBus from '@/config/eventBus'
 
 import Breadcrumb from '@/components/widgets/Breadcrumb'
-import ChartCard from '@/components/widgets/ChartCard'
-import Status from '@/components/widgets/Status'
 import ListView from '@/components/view/ListView'
 import ResourceView from '@/components/view/ResourceView'
 import ActionButton from '@/components/view/ActionButton'
@@ -357,10 +330,8 @@ export default {
   name: 'Resource',
   components: {
     Breadcrumb,
-    ChartCard,
     ResourceView,
     ListView,
-    Status,
     ActionButton,
     SearchView
   },
@@ -405,7 +376,8 @@ export default {
     }
   },
   beforeCreate () {
-    this.form = this.$form.createForm(this)
+    this.form = reactive({})
+    this.rules = reactive({})
   },
   created () {
     eventBus.on('vm-refresh-data', () => {
@@ -459,7 +431,7 @@ export default {
         }
       }
     },
-    '$i18n.locale' (to, from) {
+    '$i18n.global.locale' (to, from) {
       if (to !== from) {
         this.fetchData()
       }
@@ -493,7 +465,7 @@ export default {
         this.items = []
       }
       if (!this.routeName) {
-        this.routeName = this.$route.matched[this.$route.matched.length - 1].parent.name
+        this.routeName = this.$route.matched[this.$route.matched.length - 1].meta.name
       }
       this.apiName = ''
       this.actions = []
@@ -591,7 +563,7 @@ export default {
         this.columns.push({
           title: this.$t('label.' + String(key).toLowerCase()),
           dataIndex: key,
-          scopedSlots: { customRender: key },
+          slots: { customRender: key },
           sorter: function (a, b) { return genericCompare(a[this.dataIndex] || '', b[this.dataIndex] || '') }
         })
       }

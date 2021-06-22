@@ -17,7 +17,6 @@
 
 <template>
   <a-layout class="layout" :class="[device]">
-
     <template v-if="isSideMenu()">
       <a-drawer
         v-if="isMobile()"
@@ -106,7 +105,8 @@ export default {
   data () {
     return {
       collapsed: false,
-      menus: []
+      menus: [],
+      showSetting: false
     }
   },
   computed: {

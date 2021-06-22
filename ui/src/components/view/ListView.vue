@@ -28,7 +28,7 @@
     :rowClassName="getRowClassName"
     style="overflow-y: auto"
   >
-    <template v-slot:footer>
+    <template #footer>
       <span v-if="hasSelected">
         {{ `Selected ${selectedRowKeys.length} items` }}
       </span>
@@ -42,7 +42,7 @@
             v-for="(action, actionIndex) in $route.meta.actions"
             :key="actionIndex"
             placement="bottom">
-            <template v-slot:title>
+            <template #title>
               {{ $t(action.label) }}
             </template>
             <a-button
@@ -61,7 +61,7 @@
     </div>
     -->
 
-    <template v-slot:name="text, record">
+    <template #name="{ text, record }">
       <div style="min-width: 120px" >
         <QuickView
           style="margin-left: 5px"
@@ -85,16 +85,16 @@
         </span>
       </div>
     </template>
-    <template v-slot:templatetype="text, record">
+    <template #templatetype="{ text, record }">
       <a href="javascript:;">
         <router-link :to="{ path: $route.path + '/' + record.templatetype }">{{ text }}</router-link>
       </a>
     </template>
-    <template v-slot:type="text">
+    <template #type="{ text }">
       <span v-if="['USER.LOGIN', 'USER.LOGOUT', 'ROUTER.HEALTH.CHECKS', 'FIREWALL.CLOSE', 'ALERT.SERVICE.DOMAINROUTER'].includes(text)">{{ $t(text.toLowerCase()) }}</span>
       <span v-else>{{ text }}</span>
     </template>
-    <template v-slot:displayname="text, record">
+    <template #displayname="{ text, record }">
       <a href="javascript:;">
         <QuickView
           style="margin-left: 5px"
@@ -105,12 +105,12 @@
         <router-link :to="{ path: $route.path + '/' + record.id }">{{ text }}</router-link>
       </a>
     </template>
-    <template v-slot:username="text, record" href="javascript:;">
+    <template #username="{ text, record }" href="javascript:;">
       <router-link :to="{ path: $route.path + '/' + record.id }" v-if="['/accountuser', '/vpnuser'].includes($route.path)">{{ text }}</router-link>
       <router-link :to="{ path: '/accountuser', query: { username: record.username, domainid: record.domainid } }" v-else-if="$store.getters.userInfo.roletype !== 'User'">{{ text }}</router-link>
       <span v-else>{{ text }}</span>
     </template>
-    <template v-slot:ipaddress="text, record" href="javascript:;">
+    <template #ipaddress="{ text, record }" href="javascript:;">
       <router-link v-if="['/publicip', '/privategw'].includes($route.path)" :to="{ path: $route.path + '/' + record.id }">{{ text }}</router-link>
       <span v-else>{{ text }}</span>
       <span v-if="record.issourcenat">
@@ -118,81 +118,81 @@
         <a-tag>source-nat</a-tag>
       </span>
     </template>
-    <template v-slot:ip6address="text, record" href="javascript:;">
+    <template #ip6address="{ text, record }" href="javascript:;">
       <span>{{ ipV6Address(text, record) }}</span>
     </template>
-    <template v-slot:publicip="text, record">
+    <template #publicip="{ text, record }">
       <a href="javascript:;">
         <router-link :to="{ path: $route.path + '/' + record.id }">{{ text }}</router-link>
       </a>
     </template>
-    <template v-slot:traffictype="text" href="javascript:;">
+    <template #traffictype="{ text }" href="javascript:;">
       {{ text }}
     </template>
-    <template v-slot:vmname="text, record">
+    <template #vmname="{ text, record }">
       <a href="javascript:;">
         <router-link :to="{ path: '/vm/' + record.virtualmachineid }">{{ text }}</router-link>
       </a>
     </template>
-    <template v-slot:virtualmachinename="text, record">
+    <template #virtualmachinename="{ text, record }">
       <a href="javascript:;">
         <router-link :to="{ path: '/vm/' + record.virtualmachineid }">{{ text }}</router-link>
       </a>
     </template>
-    <template v-slot:hypervisor="text, record">
+    <template #hypervisor="{ text, record }">
       <span v-if="$route.name === 'hypervisorcapability'">
         <router-link :to="{ path: $route.path + '/' + record.id }">{{ text }}</router-link>
       </span>
       <span v-else>{{ text }}</span>
     </template>
-    <template v-slot:state="text">
+    <template #state="{ text }">
       <status :text="text ? text : ''" displayText />
     </template>
-    <template v-slot:allocationstate="text">
+    <template #allocationstate="{ text }">
       <status :text="text ? text : ''" displayText />
     </template>
-    <template v-slot:resourcestate="text">
+    <template #resourcestate="{ text }">
       <status :text="text ? text : ''" displayText />
     </template>
-    <template v-slot:powerstate="text">
+    <template #powerstate="{ text }">
       <status :text="text ? text : ''" displayText />
     </template>
-    <template v-slot:agentstate="text">
+    <template #agentstate="{ text }">
       <status :text="text ? text : ''" displayText />
     </template>
-    <template v-slot:guestnetworkname="text, record">
+    <template #guestnetworkname="{ text, record }">
       <a href="javascript:;">
         <router-link :to="{ path: '/guestnetwork/' + record.guestnetworkid }">{{ text }}</router-link>
       </a>
     </template>
-    <template v-slot:associatednetworkname="text, record">
+    <template #associatednetworkname="{ text, record }">
       <a href="javascript:;">
         <router-link :to="{ path: '/guestnetwork/' + record.associatednetworkid }">{{ text }}</router-link>
       </a>
     </template>
-    <template v-slot:vpcname="text, record">
+    <template #vpcname="{ text, record }">
       <a href="javascript:;">
         <router-link :to="{ path: '/vpc/' + record.vpcid }">{{ text }}</router-link>
       </a>
     </template>
-    <template v-slot:hostname="text, record">
+    <template #hostname="{ text, record }">
       <a href="javascript:;">
         <router-link v-if="record.hostid" :to="{ path: '/host/' + record.hostid }">{{ text }}</router-link>
         <router-link v-else-if="record.hostname" :to="{ path: $route.path + '/' + record.id }">{{ text }}</router-link>
         <span v-else>{{ text }}</span>
       </a>
     </template>
-    <template v-slot:storage="text, record">
+    <template #storage="{ text, record }">
       <a href="javascript:;">
         <router-link v-if="record.storageid" :to="{ path: '/storagepool/' + record.storageid }">{{ text }}</router-link>
         <span v-else>{{ text }}</span>
       </a>
     </template>
 
-    <template
+    <!-- <template
       v-for="(value, name) in thresholdMapping"
       :key="name"
-      v-slot:[name]="text, record"
+      #[name]="{ text, record }"
       href="javascript:;">
       <span>
         <span v-if="record[value.disable]" class="alert-disable-threshold">
@@ -205,25 +205,25 @@
           {{ text }}
         </span>
       </span>
-    </template>
+    </template> -->
 
-    <template v-slot:level="text, record">
+    <template #level="{ text, record }">
       <a href="javascript:;">
         <router-link :to="{ path: '/event/' + record.id }">{{ text }}</router-link>
       </a>
     </template>
 
-    <template v-slot:clustername="text, record">
+    <template #clustername="{ text, record }">
       <a href="javascript:;">
         <router-link :to="{ path: '/cluster/' + record.clusterid }">{{ text }}</router-link>
       </a>
     </template>
-    <template v-slot:podname="text, record">
+    <template #podname="{ text, record }">
       <a href="javascript:;">
         <router-link :to="{ path: '/pod/' + record.podid }">{{ text }}</router-link>
       </a>
     </template>
-    <template v-slot:account="text, record">
+    <template #account="{ text, record }">
       <template v-if="record.owner">
         <template v-for="(item, idx) in record.owner" :key="idx">
           <span style="margin-right:5px">
@@ -244,36 +244,36 @@
         <span v-else>{{ text }}</span>
       </template>
     </template>
-    <template v-slot:domain="text, record" href="javascript:;">
+    <template #domain="{ text, record }" href="javascript:;">
       <router-link v-if="record.domainid && !record.domainid.toString().includes(',') && $store.getters.userInfo.roletype !== 'User'" :to="{ path: '/domain/' + record.domainid }">{{ text }}</router-link>
       <span v-else>{{ text }}</span>
     </template>
-    <template v-slot:domainpath="text, record" href="javascript:;">
-      <router-link v-if="record.domainid && !record.domainid.includes(',') && $router.resolve('/domain/' + record.domainid).route.name !== '404'" :to="{ path: '/domain/' + record.domainid }">{{ text }}</router-link>
+    <template #domainpath="{ text, record }" href="javascript:;">
+      <router-link v-if="record.domainid && !record.domainid.includes(',') && $router.resolve('/domain/' + record.domainid).name !== '404'" :to="{ path: '/domain/' + record.domainid }">{{ text }}</router-link>
       <span v-else>{{ text }}</span>
     </template>
-    <template v-slot:zone="text, record">
+    <template #zone="{ text, record }">
       <a href="javascript:;">
-        <router-link v-if="record.zoneid && !record.zoneid.includes(',') && $router.resolve('/zone/' + record.zoneid).route.name !== '404'" :to="{ path: '/zone/' + record.zoneid }">{{ text }}</router-link>
+        <router-link v-if="record.zoneid && !record.zoneid.includes(',') && $router.resolve('/zone/' + record.zoneid).name !== '404'" :to="{ path: '/zone/' + record.zoneid }">{{ text }}</router-link>
         <span v-else>{{ text }}</span>
       </a>
     </template>
-    <template v-slot:zonename="text, record">
-      <router-link v-if="$router.resolve('/zone/' + record.zoneid).route.name !== '404'" :to="{ path: '/zone/' + record.zoneid }">{{ text }}</router-link>
+    <template #zonename="{ text, record }">
+      <router-link v-if="$router.resolve('/zone/' + record.zoneid).name !== '404'" :to="{ path: '/zone/' + record.zoneid }">{{ text }}</router-link>
       <span v-else>{{ text }}</span>
     </template>
-    <template v-slot:readonly="text, record">
-      <status :text="record.readonly ? 'ReadOnly' : 'ReadWrite'" />
+    <template #readonly="{ text, record }">
+      <status :name="text" :text="record.readonly ? 'ReadOnly' : 'ReadWrite'" />
     </template>
-    <template v-slot:created="text">
+    <template #created="{ text }">
       {{ $toLocaleDate(text) }}
     </template>
-    <template v-slot:sent="text">
+    <template #sent="{ text }">
       {{ $toLocaleDate(text) }}
     </template>
-    <template v-slot:order="text, record" class="shift-btns">
-      <a-tooltip placement="top">
-        <template v-slot:title>{{ $t('label.move.to.top') }}</template>
+    <template #order="{ text, record }" class="shift-btns">
+      <a-tooltip :name="text" placement="top">
+        <template #title>{{ $t('label.move.to.top') }}</template>
         <a-button
           shape="round"
           @click="moveItemTop(record)"
@@ -282,7 +282,7 @@
         </a-button>
       </a-tooltip>
       <a-tooltip placement="top">
-        <template v-slot:title>{{ $t('label.move.to.bottom') }}</template>
+        <template #title>{{ $t('label.move.to.bottom') }}</template>
         <a-button
           shape="round"
           @click="moveItemBottom(record)"
@@ -291,20 +291,20 @@
         </a-button>
       </a-tooltip>
       <a-tooltip placement="top">
-        <template v-slot:title>{{ $t('label.move.up.row') }}</template>
+        <template #title>{{ $t('label.move.up.row') }}</template>
         <a-button shape="round" @click="moveItemUp(record)" class="shift-btn">
           <a-icon type="caret-up" class="shift-btn" />
         </a-button>
       </a-tooltip>
       <a-tooltip placement="top">
-        <template v-slot:title>{{ $t('label.move.down.row') }}</template>
+        <template #title>{{ $t('label.move.down.row') }}</template>
         <a-button shape="round" @click="moveItemDown(record)" class="shift-btn">
           <a-icon type="caret-down" class="shift-btn" />
         </a-button>
       </a-tooltip>
     </template>
 
-    <template v-slot:value="text, record">
+    <template #value="{ text, record }">
       <a-input
         v-if="editableValueKey === record.key"
         :autoFocus="true"
@@ -318,14 +318,16 @@
         {{ text }}
       </div>
     </template>
-    <template v-slot:actions="text, record">
+    <template #actions="{ text, record }">
       <tooltip-button
+        :name="text"
         :tooltip="$t('label.edit')"
         :disabled="!('updateConfiguration' in $store.getters.apis)"
         v-if="editableValueKey !== record.key"
         icon="edit"
         @click="editValue(record)" />
       <tooltip-button
+        :name="text"
         :tooltip="$t('label.cancel')"
         @click="editableValueKey = null"
         v-if="editableValueKey === record.key"
@@ -339,8 +341,9 @@
         iconType="check-circle"
         iconTwoToneColor="#52c41a" />
     </template>
-    <template v-slot:tariffActions="text, record">
+    <template #tariffActions="{ text, record }">
       <tooltip-button
+        :name="text"
         :tooltip="$t('label.edit')"
         v-if="editableValueKey !== record.key"
         :disabled="!('quotaTariffUpdate' in $store.getters.apis)"

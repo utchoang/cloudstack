@@ -183,7 +183,7 @@ const user = {
             reject(error)
           })
         } else {
-          const hide = message.loading(i18n.t('message.discovering.feature'), 0)
+          const hide = message.loading(i18n.global.t('message.discovering.feature'), 0)
           api('listZones', { listall: true }).then(json => {
             const zones = json.listzonesresponse.zone || []
             commit('SET_ZONES', zones)
@@ -204,10 +204,12 @@ const user = {
             commit('SET_APIS', apis)
             resolve(apis)
             store.dispatch('GenerateRoutes', { apis }).then(() => {
-              router.addRoutes(store.getters.addRouters)
+              store.getters.addRouters.map(route => {
+                router.addRoute(route)
+              })
             })
             hide()
-            message.success(i18n.t('message.sussess.discovering.feature'))
+            message.success(i18n.global.t('message.sussess.discovering.feature'))
           }).catch(error => {
             reject(error)
           })
@@ -306,7 +308,9 @@ const user = {
           commit('SET_APIS', apis)
           resolve(apis)
           store.dispatch('GenerateRoutes', { apis }).then(() => {
-            router.addRoutes(store.getters.addRouters)
+            store.getters.addRouters.map(route => {
+              router.addRoute(route)
+            })
           })
         }).catch(error => {
           reject(error)

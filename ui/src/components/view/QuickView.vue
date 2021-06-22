@@ -25,7 +25,9 @@
         :resource="resource"
         @exec-action="execAction" />
     </template>
-    <a-button shape="circle" size="small" icon="more" style="float: right; background-color: transparent; border-color: transparent"/>
+    <a-button shape="circle" size="small" style="float: right; background-color: transparent; border-color: transparent">
+      <template #icon><MoreOutlined /></template>
+    </a-button>
   </a-popover>
 </template>
 

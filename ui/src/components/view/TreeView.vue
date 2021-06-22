@@ -561,7 +561,7 @@ export default {
 .list-tree-view {
   overflow-y: hidden;
 }
-/deep/.ant-tree.ant-tree-directory {
+:v-deep(.ant-tree).ant-tree-directory {
   li.ant-tree-treenode-selected {
     span.ant-tree-switcher {
       color: rgba(0, 0, 0, 0.65);
@@ -587,22 +587,22 @@ export default {
   }
 }
 
-/deep/.ant-tree li span.ant-tree-switcher.ant-tree-switcher-noop {
+:v-deep(.ant-tree) li span.ant-tree-switcher.ant-tree-switcher-noop {
   display: none;
 }
 
-/deep/.ant-tree-node-content-wrapper-open > span:first-child,
-/deep/.ant-tree-node-content-wrapper-close > span:first-child {
+:v-deep(.ant-tree-node-content-wrapper-open) > span:first-child,
+:v-deep(.ant-tree-node-content-wrapper-close) > span:first-child {
   display: none;
 }
 
-/deep/.ant-tree-icon__customize {
+:v-deep(.ant-tree-icon__customize) {
   color: rgba(0, 0, 0, 0.45);
   background: #fff;
   padding-right: 5px;
 }
 
-/deep/.ant-tree li .ant-tree-node-content-wrapper {
+:v-deep(.ant-tree) li .ant-tree-node-content-wrapper {
   padding-left: 0;
   margin-left: 3px;
 }
