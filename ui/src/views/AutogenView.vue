@@ -21,14 +21,14 @@
       <a-row>
         <a-col :span="device === 'mobile' ? 24 : 12" style="padding-left: 12px">
           <breadcrumb :resource="resource">
-            <template v-slot:end>
+            <template #end>
               <a-button
                 :loading="loading"
                 style="margin-bottom: 5px"
                 shape="round"
                 size="small"
-                icon="reload"
                 @click="fetchData({ irefresh: true })">
+                <template #icon><ReloadOutlined /></template>
                 {{ $t('label.refresh') }}
               </a-button>
               <a-switch
@@ -39,7 +39,7 @@
                 :checked="$store.getters.metrics"
                 @change="(checked, event) => { $store.dispatch('SetMetrics', checked) }"/>
               <a-tooltip placement="right">
-                <template v-slot:title>
+                <template #title>
                   {{ $t('label.filterby') }}
                 </template>
                 <a-select
@@ -50,7 +50,7 @@
                     ? 'all' : ['guestnetwork'].includes($route.name) ? 'all' : 'self')"
                   style="min-width: 100px; margin-left: 10px"
                   @change="changeFilter">
-                  <template v-slot:suffixIcon><FilterOutlined /></template>
+                  <template #suffixIcon><FilterOutlined /></template>
                   <a-select-option v-if="['Admin', 'DomainAdmin'].includes($store.getters.userInfo.roletype) && ['vm', 'iso', 'template'].includes($route.name)" key="all">
                     {{ $t('label.all') }}
                   </a-select-option>
@@ -98,7 +98,7 @@
           centered
           width="auto"
         >
-          <template v-slot:title>
+          <template #title>
             {{ currentAction.label }}
             <a
               v-if="currentAction.docHelp || $route.meta.docHelp"
@@ -131,7 +131,7 @@
         :confirmLoading="actionLoading"
         centered
       >
-        <template v-slot:title>
+        <template #title>
           {{ currentAction.label }}
           <a
             v-if="currentAction.docHelp || $route.meta.docHelp"
@@ -144,7 +144,7 @@
         <a-spin :spinning="actionLoading">
           <span v-if="currentAction.message">
             <a-alert type="warning">
-              <template v-slot:message v-html="$t(currentAction.message)" />
+              <template #message v-html="$t(currentAction.message)" />
             </a-alert>
             <br v-if="currentAction.paramFields.length > 0"/>
           </span>
@@ -159,7 +159,7 @@
                 :name="field.name"
                 v-if="!(currentAction.mapping && field.name in currentAction.mapping && currentAction.mapping[field.name].value)"
               >
-                <template v-slot:label>
+                <template #label>
                   {{ $t('label.' + field.name) }}
                   <a-tooltip :title="field.description">
                     <a-icon type="info-circle" style="color: rgba(0,0,0,.45)" />
@@ -304,7 +304,7 @@
         @showSizeChange="changePageSize"
         showSizeChanger
         showQuickJumper>
-        <template v-slot:buildOptionText="props">
+        <template #buildOptionText="props">
           <span>{{ props.value }} / {{ $t('label.page') }}</span>
         </template>
       </a-pagination>

@@ -52,8 +52,8 @@
             :dataSource="detailOptions[newKey]"
             :placeholder="$t('label.value')"
             @change="e => onAddInputChange(e, 'newValue')" />
-          <tooltip-button :tooltip="$t('label.add.setting')" icon="check" @click="addDetail" buttonClass="detail-button" />
-          <tooltip-button :tooltip="$t('label.cancel')" icon="close" @click="closeDetail" buttonClass="detail-button" />
+          <tooltip-button :tooltip="$t('label.add.setting')" icon="check" @onClick="addDetail" buttonClass="detail-button" />
+          <tooltip-button :tooltip="$t('label.cancel')" icon="close" @onClick="closeDetail" buttonClass="detail-button" />
         </a-input-group>
         <p v-if="error" style="color: red"> {{ $t(error) }} </p>
       </div>
@@ -80,14 +80,14 @@
           <div
             v-if="!disableSettings && 'updateTemplate' in $store.getters.apis &&
               'updateVirtualMachine' in $store.getters.apis && isAdminOrOwner() && allowEditOfDetail(item.name)">
-            <tooltip-button :tooltip="$t('label.cancel')" @click="hideEditDetail(index)" v-if="item.edit" iconType="close-circle" iconTwoToneColor="#f5222d" />
-            <tooltip-button :tooltip="$t('label.ok')" @click="updateDetail(index)" v-if="item.edit" iconType="check-circle" iconTwoToneColor="#52c41a" />
+            <tooltip-button :tooltip="$t('label.cancel')" @onClick="hideEditDetail(index)" v-if="item.edit" iconType="close-circle" iconTwoToneColor="#f5222d" />
+            <tooltip-button :tooltip="$t('label.ok')" @onClick="updateDetail(index)" v-if="item.edit" iconType="check-circle" iconTwoToneColor="#52c41a" />
             <tooltip-button
               :tooltip="$t('label.edit')"
               icon="edit"
               :disabled="deployasistemplate === true"
               v-if="!item.edit"
-              @click="showEditDetail(index)" />
+              @onClick="showEditDetail(index)" />
           </div>
           <div
             v-if="!disableSettings && 'updateTemplate' in $store.getters.apis &&

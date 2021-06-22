@@ -35,7 +35,7 @@
               type="primary"
               icon="eye"
               size="small"
-              @click="onQuickView(record.id)" />
+              @onClick="onQuickView(record.id)" />
             <tooltip-button
               tooltipPlacement="top"
               :tooltip="$t('label.delete.sslcertificate')"
@@ -43,7 +43,7 @@
               type="danger"
               icon="delete"
               size="small"
-              @click="onShowConfirm(record)" />
+              @onClick="onShowConfirm(record)" />
           </template>
         </a-table>
 

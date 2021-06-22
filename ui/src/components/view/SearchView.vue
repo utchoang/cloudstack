@@ -73,7 +73,7 @@
                         <a-input ref="input" :value="inputKey" @change="e => inputKey = e.target.value" style="width: 50px; text-align: center" :placeholder="$t('label.key')" />
                         <a-input style=" width: 20px; border-left: 0; pointer-events: none; backgroundColor: #fff" placeholder="=" disabled />
                         <a-input :value="inputValue" @change="handleValueChange" style="width: 50px; text-align: center; border-left: 0" :placeholder="$t('label.value')" />
-                        <tooltip-button icon="close" size="small" @click="inputKey = inputValue = ''" />
+                        <tooltip-button icon="close" size="small" @onClick="inputKey = inputValue = ''" />
                       </a-input-group>
                     </div>
                   </div>

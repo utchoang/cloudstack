@@ -41,7 +41,7 @@
                 type="default"
                 icon="arrow-up"
                 size="small"
-                @click="promoteAccount(record)" />
+                @onClick="promoteAccount(record)" />
               <tooltip-button
                 tooltipPlacement="top"
                 :tooltip="record.userid ? $t('label.demote.project.owner.user') : $t('label.demote.project.owner')"
@@ -49,7 +49,7 @@
                 type="default"
                 icon="arrow-down"
                 size="small"
-                @click="demoteAccount(record)" />
+                @onClick="demoteAccount(record)" />
               <tooltip-button
                 tooltipPlacement="top"
                 :tooltip="record.userid ? $t('label.remove.project.user') : $t('label.remove.project.account')"
@@ -57,7 +57,7 @@
                 icon="delete"
                 size="small"
                 :disabled="!('deleteAccountFromProject' in $store.getters.apis)"
-                @click="onShowConfirmDelete(record)" />
+                @onClick="onShowConfirmDelete(record)" />
             </span>
           </template>
         </a-table>

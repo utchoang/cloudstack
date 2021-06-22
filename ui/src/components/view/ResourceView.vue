@@ -17,45 +17,44 @@
 
 <template>
   <resource-layout>
-    <template v-slot:left>
+    <template #left>
       <slot name="info-card">
         <info-card :resource="resource" :loading="loading" />
       </slot>
     </template>
-    <!-- <a-spin :spinning="loading">
-      <template v-slot:right>
-        <a-card
-          class="spin-content"
-          :bordered="true"
-          style="width:100%">
-          <component
-            v-if="tabs.length === 1"
-            :is="tabs[0].component"
-            :resource="resource"
-            :loading="loading"
-            :tab="tabs[0].name" />
-          <a-tabs
-            v-else
-            style="width: 100%"
-            :animated="false"
-            :activeKey="activeTab || tabs[0].name"
-            @change="onTabChange" >
-            <div v-for="tab in tabs" :key="tab.name">
-              <a-tab-pane
-                :tab="$t('label.' + tab.name)"
-                v-if="showTab(tab)">
-                <component :is="tab.component" :resource="resource" :loading="loading" :tab="activeTab" />
-              </a-tab-pane>
-            </div>
-          </a-tabs>
-        </a-card>
-      </template>
-    </a-spin> -->
+    <template #right>
+      <a-card
+        class="spin-content"
+        :bordered="true"
+        style="width:100%">
+        <component
+          v-if="tabs.length === 1"
+          :is="tabs[0].component"
+          :resource="resource"
+          :loading="loading"
+          :tab="tabs[0].name" />
+        <a-tabs
+          v-else
+          style="width: 100%"
+          :animated="false"
+          :activeKey="activeTab || tabs[0].name"
+          @change="onTabChange" >
+          <template v-for="tab in tabs" :key="tab.name">
+            <a-tab-pane
+              :key="tab.name"
+              :tab="$t('label.' + tab.name)"
+              v-if="showTab(tab)">
+              <keep-alive><component :is="tab.component" :resource="resource" :loading="loading" :tab="activeTab" /></keep-alive>
+            </a-tab-pane>
+          </template>
+        </a-tabs>
+      </a-card>
+    </template>
   </resource-layout>
 </template>
 
 <script>
-// import DetailsTab from '@/components/view/DetailsTab'
+import DetailsTab from '@/components/view/DetailsTab'
 import InfoCard from '@/components/view/InfoCard'
 import ResourceLayout from '@/layouts/ResourceLayout'
 import { api } from '@/api'
@@ -81,8 +80,8 @@ export default {
       type: Array,
       default: function () {
         return [{
-          name: 'details'
-          // component: DetailsTab
+          name: 'details',
+          component: DetailsTab
         }]
       }
     },
@@ -121,6 +120,7 @@ export default {
   },
   methods: {
     onTabChange (key) {
+      console.log(this.tabs)
       this.activeTab = key
       const query = Object.assign({}, this.$route.query)
       query.tab = key

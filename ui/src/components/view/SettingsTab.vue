@@ -51,16 +51,16 @@
             :disabled="!('updateConfiguration' in $store.getters.apis)"
             v-if="editableValueKey !== index"
             icon="edit"
-            @click="setEditableSetting(item, index)" />
+            @onClick="setEditableSetting(item, index)" />
           <tooltip-button
             :tooltip="$t('label.cancel')"
-            @click="editableValueKey = null"
+            @onClick="editableValueKey = null"
             v-if="editableValueKey === index"
             iconType="close-circle"
             iconTwoToneColor="#f5222d" />
           <tooltip-button
             :tooltip="$t('label.ok')"
-            @click="updateData(item)"
+            @onClick="updateData(item)"
             v-if="editableValueKey === index"
             iconType="check-circle"
             iconTwoToneColor="#52c41a" />

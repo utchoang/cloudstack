@@ -21,6 +21,24 @@
       {{ tooltip }}
     </template>
     <a-button
+      v-if="copyResource"
+      shape="circle"
+      :size="size"
+      :type="type"
+      :disabled="disabled"
+      :class="buttonClass"
+      :loading="loading"
+      @click="handleClicked()"
+      v-clipboard:copy="copyResource" >
+      <template #icon><render-icon :icon="icon" /></template>
+      <a-icon
+        v-if="iconType && iconTwoToneColor"
+        :type="iconType"
+        theme="twoTone"
+        :twoToneColor="iconTwoToneColor" />
+    </a-button>
+    <a-button
+      v-else
       shape="circle"
       :size="size"
       :type="type"
@@ -84,6 +102,10 @@ export default {
     loading: {
       type: Boolean,
       default: false
+    },
+    copyResource: {
+      type: String,
+      default: ''
     }
   },
   data () {
@@ -92,7 +114,7 @@ export default {
   },
   methods: {
     handleClicked () {
-      this.$emit('click')
+      this.$emit('onClick')
     }
   }
 }

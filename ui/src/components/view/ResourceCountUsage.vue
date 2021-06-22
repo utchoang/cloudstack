@@ -20,7 +20,7 @@
     size="small"
     :loading="loading"
     :dataSource="usageList" >
-    <template v-slot:renderItem="item">
+    <template #renderItem="{ item }">
       <a-list-item class="list-item" v-if="!($route.meta.name === 'project' && item === 'project')">
         <div class="list-item__container">
           <strong>

@@ -70,7 +70,7 @@
           :enabled="quickViewEnabled() && actions.length > 0 && columns && columns[0].dataIndex === 'name' "
           @exec-action="$parent.execAction"/>
         <span v-if="$route.path.startsWith('/project')" style="margin-right: 5px">
-          <tooltip-button type="dashed" size="small" icon="login" @click="changeProject(record)" />
+          <tooltip-button type="dashed" size="small" icon="login" @onClick="changeProject(record)" />
         </span>
         <os-logo v-if="record.ostypename" :osName="record.ostypename" size="1x" style="margin-right: 5px" />
 
@@ -325,18 +325,18 @@
         :disabled="!('updateConfiguration' in $store.getters.apis)"
         v-if="editableValueKey !== record.key"
         icon="edit"
-        @click="editValue(record)" />
+        @onClick="editValue(record)" />
       <tooltip-button
         :name="text"
         :tooltip="$t('label.cancel')"
-        @click="editableValueKey = null"
+        @onClick="editableValueKey = null"
         v-if="editableValueKey === record.key"
         iconType="close-circle"
         iconTwoToneColor="#f5222d" />
       <tooltip-button
         :tooltip="$t('label.ok')"
         :disabled="!('updateConfiguration' in $store.getters.apis)"
-        @click="saveValue(record)"
+        @onClick="saveValue(record)"
         v-if="editableValueKey === record.key"
         iconType="check-circle"
         iconTwoToneColor="#52c41a" />
@@ -348,7 +348,7 @@
         v-if="editableValueKey !== record.key"
         :disabled="!('quotaTariffUpdate' in $store.getters.apis)"
         icon="edit"
-        @click="editTariffValue(record)" />
+        @onClick="editTariffValue(record)" />
       <slot></slot>
     </template>
   </a-table>

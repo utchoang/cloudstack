@@ -53,7 +53,8 @@ import {
   EnvironmentOutlined,
   ApiOutlined,
   ArrowUpOutlined,
-  ArrowDownOutlined
+  ArrowDownOutlined,
+  ReloadOutlined
 } from '@ant-design/icons-vue'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -124,5 +125,6 @@ export default {
     app.component('ApiOutlined', ApiOutlined)
     app.component('ArrowUpOutlined', ArrowUpOutlined)
     app.component('ArrowDownOutlined', ArrowDownOutlined)
+    app.component('ReloadOutlined', ReloadOutlined)
   }
 }

@@ -81,20 +81,20 @@
               buttonClass="icon-button"
               icon="plus"
               size="small"
-              @click="trafficAdded" />
+              @onClick="trafficAdded" />
             <tooltip-button
               :tooltip="$t('label.cancel')"
               buttonClass="icon-button"
               type="danger"
               icon="close"
               size="small"
-              @click="() => { addingTrafficForKey = null }" />
+              @onClick="() => { addingTrafficForKey = null }" />
           </div>
           <a-tag
             key="addingTraffic"
             style="margin:2px;"
             v-else
-            @click="addingTraffic(record.key, record.traffics)"
+            @onClick="addingTraffic(record.key, record.traffics)"
           >
             <a-icon type="plus" />
             {{ $t('label.add.traffic') }}
@@ -102,7 +102,7 @@
         </div>
       </template>
       <template #actions="text, record">
-        <tooltip-button :tooltip="$t('label.delete')" v-if="physicalNetworks.indexOf(record) > 0" type="danger" icon="delete" @click="onDelete(record)" />
+        <tooltip-button :tooltip="$t('label.delete')" v-if="physicalNetworks.indexOf(record) > 0" type="danger" icon="delete" @onClick="onDelete(record)" />
       </template>
       <template #footer v-if="isAdvancedZone">
         <a-button

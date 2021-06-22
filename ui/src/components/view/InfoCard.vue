@@ -90,7 +90,7 @@
             <status class="status" :text="resource.state || resource.status" displayText/>
           </div>
         </div>
-        <div class="resource-detail-item" v-if="resource.allocationstate">
+       <div class="resource-detail-item" v-if="resource.allocationstate">
           <div class="resource-detail-item__label">{{ $t('label.allocationstate') }}</div>
           <div class="resource-detail-item__details">
             <status class="status" :text="resource.allocationstate" displayText/>
@@ -113,8 +113,8 @@
               icon="BarcodeOutlined"
               type="dashed"
               size="small"
-              @click="$message.success($t('label.copied.clipboard'))"
-              v-clipboard:copy="resource.id" />
+              :copyResource="resource.id"
+              @onClick="$message.success($t('label.copied.clipboard'))" />
             <span style="margin-left: 10px;">{{ resource.id }}</span>
           </div>
         </div>
@@ -550,13 +550,13 @@
         </div>
       </div>
 
-      <!-- <div class="account-center-tags" v-if="$route.meta.related">
+      <div class="account-center-tags" v-if="$route.meta.related">
         <a-divider/>
         <div v-for="item in $route.meta.related" :key="item.path">
           <router-link
             v-if="$router.resolve('/' + item.name).name !== '404'"
             :to="{ path: '/' + item.name + '?' + item.param + '=' + (item.value ? resource[item.value] : item.param === 'account' ? resource.name + '&domainid=' + resource.domainid : resource.id) }">
-            <a-button style="margin-right: 10px" :icon="$router.resolve('/' + item.name).route.meta.icon" >
+            <a-button style="margin-right: 10px" :icon="$router.resolve('/' + item.name).meta.icon" >
               {{ $t('label.view') + ' ' + $t(item.title) }}
             </a-button>
           </router-link>
@@ -575,8 +575,8 @@
               icon="copy"
               type="dashed"
               size="small"
-              @click="$message.success($t('label.copied.clipboard'))"
-              v-clipboard:copy="resource.apikey" />
+              @onClick="$message.success($t('label.copied.clipboard'))"
+              :copyResource="resource.apikey" />
           </strong>
           <div>
             {{ resource.apikey.substring(0, 20) }}...
@@ -592,8 +592,8 @@
               icon="copy"
               type="dashed"
               size="small"
-              @click="$message.success($t('label.copied.clipboard'))"
-              v-clipboard:copy="resource.secretkey" />
+              @onClick="$message.success($t('label.copied.clipboard'))"
+              :copyResource="resource.secretkey" />
           </strong>
           <div>
             {{ resource.secretkey.substring(0, 20) }}...
@@ -686,7 +686,7 @@
             </template>
           </a-comment>
         </a-spin>
-      </div> -->
+      </div>
     </a-card>
   </a-spin>
 </template>

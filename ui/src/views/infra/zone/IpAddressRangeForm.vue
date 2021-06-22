@@ -30,7 +30,7 @@
       :pagination="false"
       style="margin-bottom: 24px; width: 100%" >
       <template #actions="text, record">
-        <tooltip-button :tooltip="$t('label.delete')" type="danger" icon="delete" @click="onDelete(record.key)" />
+        <tooltip-button :tooltip="$t('label.delete')" type="danger" icon="delete" @onClick="onDelete(record.key)" />
       </template>
       <template #footer>
         <a-form

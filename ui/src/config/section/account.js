@@ -15,6 +15,8 @@
 // specific language governing permissions and limitations
 // under the License.
 
+import { shallowRef, defineAsyncComponent } from 'vue'
+
 export default {
   name: 'account',
   title: 'label.accounts',
@@ -31,24 +33,24 @@ export default {
   tabs: [
     {
       name: 'details',
-      component: () => import('@/components/view/DetailsTab.vue')
+      component: shallowRef(defineAsyncComponent(() => import('@/components/view/DetailsTab.vue')))
     },
     {
       name: 'resources',
-      component: () => import('@/components/view/ResourceCountUsage.vue')
+      component: shallowRef(defineAsyncComponent(() => import('@/components/view/ResourceCountUsage.vue')))
     },
     {
       name: 'limits',
       show: (record, route, user) => { return ['Admin'].includes(user.roletype) },
-      component: () => import('@/components/view/ResourceLimitTab.vue')
+      component: shallowRef(defineAsyncComponent(() => import('@/components/view/ResourceLimitTab.vue')))
     },
     {
       name: 'certificate',
-      component: () => import('@/views/iam/SSLCertificateTab.vue')
+      component: shallowRef(defineAsyncComponent(() => import('@/views/iam/SSLCertificateTab.vue')))
     },
     {
       name: 'settings',
-      component: () => import('@/components/view/SettingsTab.vue'),
+      component: shallowRef(defineAsyncComponent(() => import('@/components/view/SettingsTab.vue'))),
       show: (record, route, user) => { return ['Admin'].includes(user.roletype) }
     }
   ],
