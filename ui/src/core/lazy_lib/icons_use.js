@@ -54,7 +54,22 @@ import {
   ApiOutlined,
   ArrowUpOutlined,
   ArrowDownOutlined,
-  ReloadOutlined
+  ReloadOutlined,
+  CheckCircleOutlined,
+  CloseCircleOutlined,
+  CloseCircleTwoTone,
+  CheckCircleTwoTone,
+  DoubleLeftOutlined,
+  DoubleRightOutlined,
+  CaretUpOutlined,
+  CaretDownOutlined,
+  ShareAltOutlined,
+  FilterTwoTone,
+  SearchOutlined,
+  StopOutlined,
+  InfoCircleOutlined,
+  FolderOutlined,
+  LinkOutlined
 } from '@ant-design/icons-vue'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -126,5 +141,20 @@ export default {
     app.component('ArrowUpOutlined', ArrowUpOutlined)
     app.component('ArrowDownOutlined', ArrowDownOutlined)
     app.component('ReloadOutlined', ReloadOutlined)
+    app.component('CheckCircleOutlined', CheckCircleOutlined)
+    app.component('CloseCircleOutlined', CloseCircleOutlined)
+    app.component('CloseCircleTwoTone', CloseCircleTwoTone)
+    app.component('CheckCircleTwoTone', CheckCircleTwoTone)
+    app.component('DoubleLeftOutlined', DoubleLeftOutlined)
+    app.component('DoubleRightOutlined', DoubleRightOutlined)
+    app.component('CaretUpOutlined', CaretUpOutlined)
+    app.component('CaretDownOutlined', CaretDownOutlined)
+    app.component('ShareAltOutlined', ShareAltOutlined)
+    app.component('FilterTwoTone', FilterTwoTone)
+    app.component('SearchOutlined', SearchOutlined)
+    app.component('StopOutlined', StopOutlined)
+    app.component('InfoCircleOutlined', InfoCircleOutlined)
+    app.component('FolderOutlined', FolderOutlined)
+    app.component('LinkOutlined', LinkOutlined)
   }
 }

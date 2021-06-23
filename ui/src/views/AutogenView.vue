@@ -99,27 +99,30 @@
           width="auto"
         >
           <template #title>
-            {{ currentAction.label }}
+            <span v-if="currentAction.label">{{ $t(currentAction.label) }}</span>
             <a
               v-if="currentAction.docHelp || $route.meta.docHelp"
               style="margin-left: 5px"
               :href="$config.docBase + '/' + (currentAction.docHelp || $route.meta.docHelp)"
               target="_blank">
-              <a-icon type="question-circle-o"></a-icon>
+              <QuestionCircleOutlined />
             </a>
           </template>
-          <component
-            :is="currentAction.component"
-            :resource="resource"
-            :loading="loading"
-            :action="{currentAction}"
-            v-bind="{currentAction}"
-            @refresh-data="fetchData"
-            @poll-action="pollActionCompletion"
-            @close-action="closeAction"/>
+          <keep-alive>
+            <component
+              :is="currentAction.component"
+              :resource="resource"
+              :loading="loading"
+              :action="{currentAction}"
+              v-bind="{currentAction}"
+              @refresh-data="fetchData"
+              @poll-action="pollActionCompletion"
+              @close-action="closeAction"/>
+          </keep-alive>
         </a-modal>
       </keep-alive>
       <a-modal
+        v-else
         :visible="showAction"
         :closable="true"
         :maskClosable="false"
@@ -132,29 +135,29 @@
         centered
       >
         <template #title>
-          {{ currentAction.label }}
+          <span v-if="currentAction.label">{{ $t(currentAction.label) }}</span>
           <a
             v-if="currentAction.docHelp || $route.meta.docHelp"
             style="margin-left: 5px"
             :href="$config.docBase + '/' + (currentAction.docHelp || $route.meta.docHelp)"
             target="_blank">
-            <a-icon type="question-circle-o"></a-icon>
+            <QuestionCircleOutlined />
           </a>
         </template>
         <a-spin :spinning="actionLoading">
           <span v-if="currentAction.message">
-            <a-alert type="warning">
-              <template #message v-html="$t(currentAction.message)" />
-            </a-alert>
+            <a-alert type="warning" :description="$t(currentAction.message)" />
             <br v-if="currentAction.paramFields.length > 0"/>
           </span>
           <a-form
+            :ref="formRef"
             :model="form"
             :rules="rules"
             @submit="handleSubmit"
             layout="vertical" >
             <div v-for="(field, fieldIndex) in currentAction.paramFields" :key="fieldIndex">
               <a-form-item
+                :ref="field.name"
                 :v-bind="field.name"
                 :name="field.name"
                 v-if="!(currentAction.mapping && field.name in currentAction.mapping && currentAction.mapping[field.name].value)"
@@ -162,13 +165,13 @@
                 <template #label>
                   {{ $t('label.' + field.name) }}
                   <a-tooltip :title="field.description">
-                    <a-icon type="info-circle" style="color: rgba(0,0,0,.45)" />
+                    <InfoCircleOutlined style="color: rgba(0,0,0,.45)"/>
                   </a-tooltip>
                 </template>
 
                 <span v-if="field.type==='boolean'">
                   <a-switch
-                    v-model:value="form[field.name]"
+                    v-model:checked="form[field.name]"
                     :placeholder="field.description"
                     :autoFocus="fieldIndex === firstIndex"
                   />
@@ -313,7 +316,7 @@
 </template>
 
 <script>
-import { reactive } from 'vue'
+import { ref, reactive, toRaw } from 'vue'
 import { api } from '@/api'
 import { mixinDevice } from '@/utils/mixin.js'
 import { genericCompare } from '@/utils/sort.js'
@@ -370,12 +373,12 @@ export default {
       searchFilters: [],
       searchParams: {},
       actions: [],
-      formModel: {},
       confirmDirty: false,
       firstIndex: 0
     }
   },
   beforeCreate () {
+    this.formRef = ref()
     this.form = reactive({})
     this.rules = reactive({})
   },
@@ -686,8 +689,7 @@ export default {
     },
     execAction (action, isGroupAction) {
       const self = this
-      this.form = this.$form.createForm(this)
-      this.formModel = {}
+      this.form = {}
       if (action.component && action.api && !action.popup) {
         this.$router.push({ name: action.api })
         return
@@ -738,6 +740,10 @@ export default {
 
       this.showAction = true
       for (const param of this.currentAction.paramFields) {
+        this.form[param.name] = null
+        this.rules[param.name] = []
+        this.setRules(param)
+
         if (param.type === 'list' && ['tags', 'hosttags'].includes(param.name)) {
           param.type = 'string'
         }
@@ -746,7 +752,7 @@ export default {
         }
       }
       this.actionLoading = false
-      if (action.dataView && ['copy', 'edit', 'share-alt'].includes(action.icon)) {
+      if (action.dataView && ['CopyOutlined', 'EditOutlined', 'ShareAltOutlined'].includes(action.icon)) {
         this.fillEditFormFieldValues()
       }
     },
@@ -852,7 +858,6 @@ export default {
       })
     },
     fillEditFormFieldValues () {
-      const form = this.form
       this.currentAction.paramFields.map(field => {
         let fieldValue = null
         let fieldName = null
@@ -863,40 +868,38 @@ export default {
         }
         fieldValue = this.resource[fieldName] ? this.resource[fieldName] : null
         if (fieldValue) {
-          form.getFieldDecorator(field.name, { initialValue: fieldValue })
-          this.formModel[field.name] = fieldValue
+          this.form[field.name] = fieldValue
         }
       })
     },
-    handleSubmit (e) {
+    handleSubmit () {
       if (!this.dataView && this.currentAction.groupAction && this.selectedRowKeys.length > 0) {
-        this.form.validateFields((err, values) => {
-          if (!err) {
-            this.actionLoading = true
-            const itemsNameMap = {}
-            this.items.map(x => {
-              itemsNameMap[x.id] = x.name || x.displaytext || x.id
-            })
-            const paramsList = this.currentAction.groupMap(this.selectedRowKeys, values)
-            for (const params of paramsList) {
-              var resourceName = itemsNameMap[params.id]
-              // Using a method for this since it's an async call and don't want wrong prarms to be passed
-              this.callGroupApi(params, resourceName)
-            }
-            this.$message.info({
-              content: this.$t(this.currentAction.label),
-              key: this.currentAction.label,
-              duration: 3
-            })
-            setTimeout(() => {
-              this.actionLoading = false
-              this.closeAction()
-              this.fetchData()
-            }, 500)
+        this.formRef.value.validate().then(() => {
+          const values = toRaw(this.form)
+          this.actionLoading = true
+          const itemsNameMap = {}
+          this.items.map(x => {
+            itemsNameMap[x.id] = x.name || x.displaytext || x.id
+          })
+          const paramsList = this.currentAction.groupMap(this.selectedRowKeys, values)
+          for (const params of paramsList) {
+            var resourceName = itemsNameMap[params.id]
+            // Using a method for this since it's an async call and don't want wrong prarms to be passed
+            this.callGroupApi(params, resourceName)
           }
+          this.$message.info({
+            content: this.$t(this.currentAction.label),
+            key: this.currentAction.label,
+            duration: 3
+          })
+          setTimeout(() => {
+            this.actionLoading = false
+            this.closeAction()
+            this.fetchData()
+          }, 500)
         })
       } else {
-        this.execSubmit(e)
+        this.execSubmit()
       }
     },
     callGroupApi (params, resourceName) {
@@ -940,12 +943,9 @@ export default {
       }
       return false
     },
-    execSubmit (e) {
-      e.preventDefault()
-      this.form.validateFields((err, values) => {
-        if (err) {
-          return
-        }
+    execSubmit () {
+      this.formRef.value.validate().then(() => {
+        const values = toRaw(this.form)
         const params = {}
         const action = this.currentAction
         if ('id' in this.resource && action.params.map(i => { return i.name }).includes('id')) {
@@ -1014,7 +1014,7 @@ export default {
         }
         api(...args).then(json => {
           hasJobId = this.handleResponse(json, resourceName, action)
-          if ((action.icon === 'delete' || ['archiveEvents', 'archiveAlerts', 'unmanageVirtualMachine'].includes(action.api)) && this.dataView) {
+          if ((action.icon === 'DeleteOutlined' || ['archiveEvents', 'archiveAlerts', 'unmanageVirtualMachine'].includes(action.api)) && this.dataView) {
             this.$router.go(-1)
           } else {
             if (!hasJobId) {
@@ -1168,6 +1168,73 @@ export default {
       } else {
         callback()
       }
+    },
+    setRules (field) {
+      let rule = {}
+
+      switch (true) {
+        case (field.type === 'boolean'):
+          rule.required = field.required
+          rule.message = this.$t('message.error.required.input')
+          rule.trigger = 'change'
+          this.rules[field.name].push(rule)
+          break
+        case (this.currentAction.mapping && field.name in this.currentAction.mapping && this.currentAction.mapping[field.name].options):
+          rule.required = field.required
+          rule.message = this.$t('message.error.select')
+          rule.trigger = 'change'
+          this.rules[field.name].push(rule)
+          break
+        case (field.name === 'keypair' || (field.name === 'account' && !['addAccountToProject', 'createAccount'].includes(this.currentAction.api))):
+          rule.required = field.required
+          rule.message = this.$t('message.error.select')
+          rule.trigger = 'change'
+          this.rules[field.name].push(rule)
+          break
+        case (field.type === 'uuid'):
+          rule.required = field.required
+          rule.message = this.$t('message.error.select')
+          rule.trigger = 'change'
+          this.rules[field.name].push(rule)
+          break
+        case (field.type === 'list'):
+          rule.required = field.required
+          rule.message = this.$t('message.error.select')
+          rule.trigger = 'change'
+          this.rules[field.name].push(rule)
+          break
+        case (field.type === 'long'):
+          rule.required = field.required
+          rule.message = this.$t('message.validate.number')
+          rule.trigger = 'change'
+          this.rules[field.name].push(rule)
+          break
+        case (field.name === 'password' || field.name === 'currentpassword' || field.name === 'confirmpassword'):
+          rule.required = field.required
+          rule.message = this.$t('message.error.required.input')
+          rule.trigger = 'change'
+          this.rules[field.name].push(rule)
+
+          rule = {}
+          rule.validator = this.validateTwoPassword
+          rule.trigger = 'change'
+          this.rules[field.name].push(rule)
+          break
+        case (field.name === 'certificate' || field.name === 'privatekey' || field.name === 'certchain'):
+          rule.required = field.required
+          rule.message = this.$t('message.error.required.input')
+          rule.trigger = 'change'
+          this.rules[field.name].push(rule)
+          break
+        default:
+          rule.required = field.required
+          rule.message = this.$t('message.error.required.input')
+          rule.trigger = 'change'
+          this.rules[field.name].push(rule)
+          break
+      }
+
+      rule = {}
     }
   }
 }

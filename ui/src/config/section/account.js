@@ -61,7 +61,7 @@ export default {
       label: 'label.add.account',
       listView: true,
       popup: true,
-      component: () => import('@/views/iam/AddAccount.vue')
+      component: shallowRef(defineAsyncComponent(() => import('@/views/iam/AddAccount.vue')))
     },
     {
       api: 'ldapCreateAccount',
@@ -73,7 +73,7 @@ export default {
       show: (record, store) => {
         return store.isLdapEnabled
       },
-      component: () => import('@/views/iam/AddLdapAccount.vue')
+      component: shallowRef(defineAsyncComponent(() => import('@/views/iam/AddLdapAccount.vue')))
     },
     {
       api: 'updateAccount',

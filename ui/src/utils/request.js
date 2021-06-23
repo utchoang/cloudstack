@@ -42,6 +42,7 @@ const err = (error) => {
         duration: 0
       })
       store.dispatch('Logout').then(() => {
+        console.log(router)
         if (router.history.current.path !== '/user/login') {
           router.push({ path: '/user/login', query: { redirect: router.history.current.fullPath } })
         }

@@ -18,7 +18,8 @@
 <template>
   <a-spin :spinning="formLoading">
     <a-form
-      :form="form"
+      :model="form"
+      :rules="rules"
       @submit="handleSubmit"
       layout="vertical"
     >
@@ -30,9 +31,7 @@
           <a-input-number
             :disabled="!('updateResourceLimit' in $store.getters.apis)"
             style="width: 100%;"
-            v-decorator="[item.resourcetype, {
-              initialValue: item.max
-            }]"
+            v-model:value="form[item.resourcetype]"
             :autoFocus="index === 0"
           />
         </a-form-item>
@@ -50,6 +49,7 @@
 </template>
 
 <script>
+import { reactive } from 'vue'
 import { api } from '@/api'
 
 export default {
@@ -71,7 +71,8 @@ export default {
     }
   },
   beforeCreate () {
-    this.form = this.$form.createForm(this)
+    this.form = reactive({})
+    this.rules = reactive({})
   },
   created () {
     this.fetchData()
@@ -99,9 +100,14 @@ export default {
     },
     async fetchData () {
       const params = this.getParams()
+      const form = {}
       try {
         this.formLoading = true
         this.dataResource = await this.listResourceLimits(params)
+        this.dataResource.forEach(item => {
+          form[item.resourcetype] = item.max | -1
+        })
+        this.form = form
         this.formLoading = false
       } catch (e) {
         this.$notification.error({

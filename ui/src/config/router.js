@@ -9,6 +9,7 @@ import IFramePlugin from '@/views/plugins/IFramePlugin.vue'
 import event from '@/config/section/event'
 import infra from '@/config/section/infra'
 import account from '@/config/section/account'
+import domain from '@/config/section/domain'
 
 function generateRouterMap (section) {
   var map = {
@@ -193,7 +194,7 @@ export function asyncRouterMap () {
       // generateRouterMap(user),
       // generateRouterMap(role),
       generateRouterMap(account),
-      // generateRouterMap(domain),
+      generateRouterMap(domain),
       generateRouterMap(infra),
       // generateRouterMap(offering),
       // generateRouterMap(config),

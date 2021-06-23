@@ -70,7 +70,7 @@
           :enabled="quickViewEnabled() && actions.length > 0 && columns && columns[0].dataIndex === 'name' "
           @exec-action="$parent.execAction"/>
         <span v-if="$route.path.startsWith('/project')" style="margin-right: 5px">
-          <tooltip-button type="dashed" size="small" icon="login" @onClick="changeProject(record)" />
+          <tooltip-button type="dashed" size="small" icon="LoginOutlined" @onClick="changeProject(record)" />
         </span>
         <os-logo v-if="record.ostypename" :osName="record.ostypename" size="1x" style="margin-right: 5px" />
 
@@ -278,7 +278,7 @@
           shape="round"
           @click="moveItemTop(record)"
           class="shift-btn">
-          <a-icon type="double-left" class="shift-btn shift-btn--rotated" />
+          <DoubleLeftOutlined class="shift-btn shift-btn--rotated" />
         </a-button>
       </a-tooltip>
       <a-tooltip placement="top">
@@ -287,19 +287,19 @@
           shape="round"
           @click="moveItemBottom(record)"
           class="shift-btn">
-          <a-icon type="double-right" class="shift-btn shift-btn--rotated" />
+          <DoubleRightOutlined class="shift-btn shift-btn--rotated" />
         </a-button>
       </a-tooltip>
       <a-tooltip placement="top">
         <template #title>{{ $t('label.move.up.row') }}</template>
         <a-button shape="round" @click="moveItemUp(record)" class="shift-btn">
-          <a-icon type="caret-up" class="shift-btn" />
+          <CaretUpOutlined class="shift-btn" />
         </a-button>
       </a-tooltip>
       <a-tooltip placement="top">
         <template #title>{{ $t('label.move.down.row') }}</template>
         <a-button shape="round" @click="moveItemDown(record)" class="shift-btn">
-          <a-icon type="caret-down" class="shift-btn" />
+          <CaretDownOutlined class="shift-btn" />
         </a-button>
       </a-tooltip>
     </template>
@@ -324,21 +324,21 @@
         :tooltip="$t('label.edit')"
         :disabled="!('updateConfiguration' in $store.getters.apis)"
         v-if="editableValueKey !== record.key"
-        icon="edit"
+        icon="EditOutlined"
         @onClick="editValue(record)" />
       <tooltip-button
         :name="text"
         :tooltip="$t('label.cancel')"
         @onClick="editableValueKey = null"
         v-if="editableValueKey === record.key"
-        iconType="close-circle"
+        iconType="CloseCircleTwoTone"
         iconTwoToneColor="#f5222d" />
       <tooltip-button
         :tooltip="$t('label.ok')"
         :disabled="!('updateConfiguration' in $store.getters.apis)"
         @onClick="saveValue(record)"
         v-if="editableValueKey === record.key"
-        iconType="check-circle"
+        iconType="CheckCircleTwoTone"
         iconTwoToneColor="#52c41a" />
     </template>
     <template #tariffActions="{ text, record }">
@@ -347,7 +347,7 @@
         :tooltip="$t('label.edit')"
         v-if="editableValueKey !== record.key"
         :disabled="!('quotaTariffUpdate' in $store.getters.apis)"
-        icon="edit"
+        icon="EditOutlined"
         @onClick="editTariffValue(record)" />
       <slot></slot>
     </template>

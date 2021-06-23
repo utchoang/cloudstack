@@ -20,14 +20,14 @@
     <a-input-search
       style="width: 25vw;float: right;margin-bottom: 10px; z-index: 8;"
       :placeholder="$t('label.search')"
-      v-model="filter"
+      v-model:value="filter"
       @search="handleSearch" />
 
     <a-list size="large" class="list" :loading="loading || tabLoading">
       <a-list-item :key="index" v-for="(item, index) in items" class="item">
         <a-list-item-meta>
-          <template v-slot:title style="word-break: break-all">{{ item.name }}</template>
-          <template v-slot:description style="word-break: break-all">{{ item.description }}</template>
+          <template #title style="word-break: break-all">{{ item.name }}</template>
+          <template #description style="word-break: break-all">{{ item.description }}</template>
         </a-list-item-meta>
 
         <div class="item__content">
@@ -36,7 +36,7 @@
             v-if="editableValueKey === index"
             class="editable-value value"
             :defaultValue="item.value"
-            v-model="editableValue"
+            v-model:value="editableValue"
             @keydown.esc="editableValueKey = null"
             @pressEnter="updateData(item)">
           </a-input>
@@ -45,24 +45,24 @@
           </span>
         </div>
 
-        <template v-slot:actions class="action">
+        <template #actions class="action">
           <tooltip-button
             :tooltip="$t('label.edit')"
             :disabled="!('updateConfiguration' in $store.getters.apis)"
             v-if="editableValueKey !== index"
-            icon="edit"
+            icon="EditOutlined"
             @onClick="setEditableSetting(item, index)" />
           <tooltip-button
             :tooltip="$t('label.cancel')"
             @onClick="editableValueKey = null"
             v-if="editableValueKey === index"
-            iconType="close-circle"
+            iconType="CloseCircleTwoTone"
             iconTwoToneColor="#f5222d" />
           <tooltip-button
             :tooltip="$t('label.ok')"
             @onClick="updateData(item)"
             v-if="editableValueKey === index"
-            iconType="check-circle"
+            iconType="CheckCircleTwoTone"
             iconTwoToneColor="#52c41a" />
         </template>
       </a-list-item>
@@ -210,7 +210,7 @@ export default {
 
     &__content {
       width: 100%;
-      display: flex;
+      display: block;
       word-break: break-all;
 
       @media (min-width: 760px) {

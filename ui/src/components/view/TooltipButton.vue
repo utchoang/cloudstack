@@ -30,12 +30,10 @@
       :loading="loading"
       @click="handleClicked()"
       v-clipboard:copy="copyResource" >
-      <template #icon><render-icon :icon="icon" /></template>
-      <a-icon
-        v-if="iconType && iconTwoToneColor"
-        :type="iconType"
-        theme="twoTone"
-        :twoToneColor="iconTwoToneColor" />
+      <template #icon v-if="icon"><render-icon :icon="icon" /></template>
+      <template v-if="iconType && iconTwoToneColor">
+        <render-icon :icon="iconType" :props="{ theme: 'twoTone', twoToneColor: iconTwoToneColor }" />
+      </template>
     </a-button>
     <a-button
       v-else
@@ -46,12 +44,10 @@
       :class="buttonClass"
       :loading="loading"
       @click="handleClicked()" >
-      <template #icon><render-icon :icon="icon" /></template>
-      <a-icon
-        v-if="iconType && iconTwoToneColor"
-        :type="iconType"
-        theme="twoTone"
-        :twoToneColor="iconTwoToneColor" />
+      <template #icon v-if="icon"><render-icon :icon="icon" /></template>
+      <template v-if="iconType && iconTwoToneColor">
+        <render-icon :icon="iconType" :props="{ theme: 'twoTone', twoToneColor: iconTwoToneColor }" />
+      </template>
     </a-button>
   </a-tooltip>
 </template>
@@ -106,10 +102,6 @@ export default {
     copyResource: {
       type: String,
       default: ''
-    }
-  },
-  data () {
-    return {
     }
   },
   methods: {

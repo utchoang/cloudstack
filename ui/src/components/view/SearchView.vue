@@ -35,12 +35,12 @@
         :placeholder="$t('label.search')"
         v-model:value="searchQuery"
         @search="onSearch">
-        <template v-slot:addonBefore>
+        <template #addonBefore>
           <a-popover
             placement="bottomRight"
             trigger="click"
-            v-model="visibleFilter">
-            <template v-slot:content v-if="visibleFilter">
+            v-model:visible="visibleFilter">
+            <template #content v-if="visibleFilter">
               <a-form
                 style="min-width: 170px"
                 :model="form"
@@ -73,7 +73,7 @@
                         <a-input ref="input" :value="inputKey" @change="e => inputKey = e.target.value" style="width: 50px; text-align: center" :placeholder="$t('label.key')" />
                         <a-input style=" width: 20px; border-left: 0; pointer-events: none; backgroundColor: #fff" placeholder="=" disabled />
                         <a-input :value="inputValue" @change="handleValueChange" style="width: 50px; text-align: center; border-left: 0" :placeholder="$t('label.value')" />
-                        <tooltip-button icon="close" size="small" @onClick="inputKey = inputValue = ''" />
+                        <tooltip-button icon="CloseOutlined" size="small" @onClick="inputKey = inputValue = ''" />
                       </a-input-group>
                     </div>
                   </div>
@@ -83,15 +83,19 @@
                     class="filter-group-button-clear"
                     type="default"
                     size="small"
-                    icon="stop"
-                    @click="onClear">{{ $t('label.reset') }}</a-button>
+                    @click="onClear">
+                    <template #icon><StopOutlined /></template>
+                    {{ $t('label.reset') }}
+                  </a-button>
                   <a-button
                     class="filter-group-button-search"
                     type="primary"
                     size="small"
-                    icon="search"
                     html-type="submit"
-                    @click="handleSubmit">{{ $t('label.search') }}</a-button>
+                    @click="handleSubmit">
+                    <template #icon><SearchOutlined /></template>
+                    {{ $t('label.search') }}
+                  </a-button>
                 </div>
               </a-form>
             </template>
@@ -99,7 +103,8 @@
               class="filter-button"
               size="small"
               @click="() => { searchQuery = null }">
-              <a-icon type="filter" :theme="isFiltered ? 'twoTone' : 'outlined'" />
+              <FilterTwoTone v-if="isFiltered" />
+              <FilterOutlined v-else />
             </a-button>
           </a-popover>
         </template>
@@ -221,6 +226,7 @@ export default {
           loading: false
         })
         arrayField.push(item)
+        this.form[item] = null
       })
 
       const promises = []
@@ -317,6 +323,9 @@ export default {
       if (this.$route.meta.params) {
         Object.assign(this.fieldValues, this.$route.meta.params)
       }
+      this.fields.forEach(field => {
+        this.form[field.name] = this.fieldValues[field.name]
+      })
       this.inputKey = this.fieldValues['tags[0].key'] || null
       this.inputValue = this.fieldValues['tags[0].value'] || null
     },

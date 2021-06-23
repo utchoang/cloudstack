@@ -254,7 +254,7 @@ export default {
                 if (item.id === dataGenerate[i].id) {
                   // replace all value of tree data
                   Object.keys(dataGenerate[i]).forEach((value, idx) => {
-                    this.$set(this.treeVerticalData[index], value, dataGenerate[i][value])
+                    this.treeVerticalData[index][value] = dataGenerate[i][value]
                   })
                 }
               })
@@ -305,18 +305,20 @@ export default {
       this.defaultSelected = []
       this.defaultSelected.push(this.selectedTreeKey)
 
-      this.$set(this.treeStore, 'expands', this.arrExpand)
-      this.$set(this.treeStore, 'selected', this.selectedTreeKey)
+      const treeStore = this.treeStore
+      treeStore.expands = this.arrExpand
+      treeStore.selected = this.selectedTreeKey
       this.$emit('change-tree-store', this.treeStore)
 
       this.getDetailResource(this.selectedTreeKey)
     },
     onExpand (treeExpand) {
+      const treeStore = this.treeStore
       this.arrExpand = treeExpand
-      this.$set(this.treeStore, 'isExpand', true)
-      this.$set(this.treeStore, 'expands', this.arrExpand)
-      this.$set(this.treeStore, 'selected', this.selectedTreeKey)
-      this.$emit('change-tree-store', this.treeStore)
+      treeStore.isExpand = true
+      treeStore.expands = this.arrExpand
+      treeStore.selected = this.selectedTreeKey
+      this.$emit('change-tree-store', treeStore)
     },
     onSearch (value) {
       if (this.searchQuery === '' && this.oldSearchQuery === '') {
@@ -491,17 +493,17 @@ export default {
 
       Object.keys(resource).forEach((value, idx) => {
         if (resource[value] === 'Unlimited') {
-          this.$set(resource, value, '-1')
+          resource.value = '-1'
         }
       })
-      this.$set(resource, 'title', resource.name)
-      this.$set(resource, 'key', resource.id)
+      resource.title = resource.name
+      resource.key = resource.id
       resource.slots = {
         icon: 'parent'
       }
 
       if (!resource.haschild) {
-        this.$set(resource, 'isLeaf', true)
+        resource.isLeaf = true
         resource.slots = {
           icon: 'leaf'
         }

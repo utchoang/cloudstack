@@ -17,6 +17,7 @@
 
 <template>
   <a-form
+    :ref="formRef"
     id="formLogin"
     class="user-layout-login"
     :model="form"
@@ -107,8 +108,7 @@
 </template>
 
 <script>
-import { reactive, toRaw } from 'vue'
-import { useForm } from '@ant-design-vue/use'
+import { ref, reactive, toRaw } from 'vue'
 import { api } from '@/api'
 import { mapActions } from 'vuex'
 import TranslationMenu from '@/components/header/TranslationMenu'
@@ -131,6 +131,7 @@ export default {
     }
   },
   beforeCreate () {
+    this.formRef = ref()
     this.form = reactive({
       username: '',
       password: '',
@@ -143,7 +144,7 @@ export default {
   },
   computed: {
     rules () {
-      let rules = []
+      let rules = {}
 
       if (this.customActiveKey === 'cs') {
         rules = reactive({
@@ -197,8 +198,7 @@ export default {
       // this.form.resetFields()
     },
     handleSubmit () {
-      const { validate } = useForm(this.form, this.rules)
-      validate().then(() => {
+      this.formRef.value.validate().then(() => {
         this.state.loginBtn = true
 
         const values = toRaw(this.form)
