@@ -256,13 +256,13 @@ export default {
     overflow-y: auto;
     padding: 16px 20px 0;
 
-    :v-deep(.has-error) {
+    :deep(.has-error) {
       .ant-form-explain {
         text-align: left;
       }
     }
 
-    :v-deep(.ant-form-item-control) {
+    :deep(.ant-form-item-control) {
       text-align: left;
     }
   }

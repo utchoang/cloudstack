@@ -740,7 +740,10 @@ export default {
 
       this.showAction = true
       for (const param of this.currentAction.paramFields) {
-        this.form[param.name] = null
+        this.form[param.name] = undefined
+        if (param.type === 'boolean') {
+          this.form[param.name] = false
+        }
         this.rules[param.name] = []
         this.setRules(param)
 

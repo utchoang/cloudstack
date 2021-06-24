@@ -12,10 +12,13 @@ export default createStore({
     permission
   },
   state: {
+
   },
   mutations: {
+
   },
   actions: {
+
   },
   getters
 })

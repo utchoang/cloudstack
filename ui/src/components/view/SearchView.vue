@@ -484,7 +484,7 @@ export default {
 }
 
 .filter-group {
-  :v-deep(.ant-input-group-addon) {
+  :deep(.ant-input-group-addon) {
     padding: 0 5px;
   }
 
@@ -510,7 +510,7 @@ export default {
     }
   }
 
-  :v-deep(.ant-input-group) {
+  :deep(.ant-input-group) {
     .ant-input-affix-wrapper {
       width: calc(100% - 10px);
     }

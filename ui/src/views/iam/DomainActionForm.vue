@@ -155,6 +155,9 @@ export default {
     this.firstIndex = 0
     this.action.paramFields.forEach((field, fieldIndex) => {
       this.form[field.name] = undefined
+      if (field.type === 'boolean') {
+        this.form[field.name] = false
+      }
       this.setRules(field)
       if (!isFirstIndexSet && !(this.action.mapping && field.name in this.action.mapping && this.action.mapping[field.name].value)) {
         this.firstIndex = fieldIndex
@@ -308,12 +311,8 @@ export default {
 
       switch (true) {
         case (field.type === 'boolean'):
-          rule.required = field.required
-          rule.message = this.$t('message.error.required.input')
-          rule.trigger = 'change'
-          this.rules[field.name].push(rule)
           break
-        case (this.currentAction.mapping && field.name in this.currentAction.mapping && this.currentAction.mapping[field.name].options):
+        case (this.action.mapping && field.name in this.action.mapping && this.action.mapping[field.name].options):
           rule.required = field.required
           rule.message = this.$t('message.error.select')
           rule.trigger = 'change'

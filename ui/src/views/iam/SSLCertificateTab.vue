@@ -225,7 +225,7 @@ export default {
 </script>
 
 <style scoped>
-:v-deep(.ant-table-fixed-right) {
+:deep(.ant-table-fixed-right) {
   z-index: 5;
 }
 

@@ -22,20 +22,15 @@
         <a-col :span="14" style="padding-left: 6px">
           <breadcrumb :resource="resource">
             <template #end>
-              <a-row>
-                <template #title>
-                  {{ $t('label.refresh') }}
-                </template>
-                <a-button
-                  style="margin-top: 4px"
-                  :loading="loading"
-                  shape="round"
-                  size="small"
-                  @click="fetchData()">
-                  <template #icon><ReloadOutlined /></template>
-                  {{ $t('label.refresh') }}
-                </a-button>
-              </a-row>
+              <a-button
+                style="margin-top: 4px"
+                :loading="loading"
+                shape="round"
+                size="small"
+                @click="fetchData()">
+                <template #icon><ReloadOutlined /></template>
+                {{ $t('label.refresh') }}
+              </a-button>
             </template>
           </breadcrumb>
         </a-col>

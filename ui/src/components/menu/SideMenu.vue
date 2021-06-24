@@ -88,23 +88,23 @@ export default {
   z-index: 10;
   height: auto;
 
-  :v-deep(.ant-layout-sider-children) {
+  :deep(.ant-layout-sider-children) {
     overflow-y: hidden;
     &:hover {
       overflow-y: auto;
     }
   }
 
-  :v-deep(.ant-menu-vertical) .ant-menu-item {
+  :deep(.ant-menu-vertical) .ant-menu-item {
     margin-top: 0px;
     margin-bottom: 0px;
   }
 
-  :v-deep(.ant-menu-inline) .ant-menu-item:not(:last-child) {
+  :deep(.ant-menu-inline) .ant-menu-item:not(:last-child) {
     margin-bottom: 0px;
   }
 
-  :v-deep(.ant-menu-inline) .ant-menu-item {
+  :deep(.ant-menu-inline) .ant-menu-item {
     margin-top: 0px;
   }
 

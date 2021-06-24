@@ -129,11 +129,24 @@ export default {
     },
     renderSubMenu (menu) {
       const itemArr = []
+      const on = {
+        click: () => {
+          this.handleClickParentMenu(menu)
+        }
+      }
       if (!menu.hideChildrenInMenu) {
         menu.children.forEach(item => itemArr.push(this.renderItem(item)))
       }
+      console.log(menu.children)
       return (
         <SubMenu {...{ key: menu.path }}>
+          <template v-slot:title>
+            <span>
+              {this.renderIcon(menu.meta.icon, menu)}
+              <span {...{ on: on }}>{this.$t(menu.meta.title)}</span>
+            </span>
+          </template>
+          {itemArr}
         </SubMenu>
       )
     },

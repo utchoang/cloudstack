@@ -81,7 +81,7 @@ export default {
     this.fetchData()
   },
   watch: {
-    '$i18n.locale' (to, from) {
+    '$i18n.global.locale' (to, from) {
       if (to !== from) {
         this.fetchData()
       }

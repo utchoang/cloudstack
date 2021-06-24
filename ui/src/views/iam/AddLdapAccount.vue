@@ -505,11 +505,11 @@ export default {
   }
 }
 
-:v-deep(.light-row) {
+:deep(.light-row) {
   background-color: #fff;
 }
 
-:v-deep(.dark-row) {
+:deep(.dark-row) {
   background-color: #f9f9f9;
 }
 

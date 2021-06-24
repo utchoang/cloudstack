@@ -2166,11 +2166,11 @@ export default {
     overflow-y: auto;
   }
 
-  :v-deep(.step-error) {
+  :deep(.step-error) {
     color: #f5222d;
     margin-top: 20px;
 
-    :v-deep(.ant-card-body) {
+    :deep(.ant-card-body) {
       padding: 15px;
       text-align: justify;
     }

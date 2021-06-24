@@ -612,19 +612,19 @@ export default {
 </script>
 
 <style scoped>
-:v-deep(.ant-table-thead) {
+:deep(.ant-table-thead) {
   background-color: #f9f9f9;
 }
 
-:v-deep(.ant-table-small) > .ant-table-content > .ant-table-body {
+:deep(.ant-table-small) > .ant-table-content > .ant-table-body {
   margin: 0;
 }
 
-:v-deep(.light-row) {
+:deep(.light-row) {
   background-color: #fff;
 }
 
-:v-deep(.dark-row) {
+:deep(.dark-row) {
   background-color: #f9f9f9;
 }
 </style>

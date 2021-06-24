@@ -42,11 +42,11 @@
           )" >
         <a-button
           :type="action.icon === 'DeleteOutlined' ? 'danger' : (action.icon === 'plus' ? 'primary' : 'default')"
-          :shape="!dataView && action.icon === 'PlusOutlined' ? 'round' : 'circle'"
+          :shape="!dataView && ['PlusOutlined', 'plus-outlined'].includes(action.icon) ? 'round' : 'circle'"
           style="margin-left: 5px"
           :size="size"
           @click="execAction(action)">
-          <span v-if="!dataView && action.icon === 'PlusOutlined'">
+          <span v-if="!dataView && ['PlusOutlined', 'plus-outlined'].includes(action.icon)">
             {{ $t(action.label) }}
           </span>
           <render-icon v-if="(typeof action.icon === 'string')" :icon="action.icon" />
@@ -59,12 +59,12 @@
             (!dataView && ((action.listView && ('show' in action ? action.show(resource, $store.getters) : true)) || (action.groupAction && selectedRowKeys.length > 0 && ('groupShow' in action ? action.show(resource, $store.getters) : true)))) ||
             (dataView && action.dataView && ('show' in action ? action.show(resource, $store.getters) : true))
           )"
-        :type="action.icon === 'DeleteOutlined' ? 'danger' : (action.icon === 'PlusOutlined' ? 'primary' : 'default')"
-        :shape="!dataView && ['PlusOutlined', 'UserAddOutlined'].includes(action.icon) ? 'round' : 'circle'"
+        :type="['DeleteOutlined', 'delete-outlined'].includes(action.icon) ? 'danger' : (['PlusOutlined', 'plus-outlined'].includes(action.icon) ? 'primary' : 'default')"
+        :shape="!dataView && ['PlusOutlined', 'plus-outlined', 'UserAddOutlined', 'user-add-outlined'].includes(action.icon) ? 'round' : 'circle'"
         style="margin-left: 5px"
         :size="size"
         @click="execAction(action)">
-        <span v-if="!dataView && ['PlusOutlined', 'UserAddOutlined'].includes(action.icon)">
+        <span v-if="!dataView && ['PlusOutlined', 'plus-outlined', 'UserAddOutlined', 'user-add-outlined'].includes(action.icon)">
           {{ $t(action.label) }}
         </span>
         <render-icon v-if="(typeof action.icon === 'string')" :icon="action.icon" />
@@ -195,7 +195,7 @@ export default {
   margin-left: 5px;
 }
 
-:v-deep(.button-action-badge) .ant-badge-count {
+:deep(.button-action-badge) .ant-badge-count {
   right: 10px;
   z-index: 8;
 }

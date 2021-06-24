@@ -25,6 +25,7 @@
     <template #right>
       <a-card
         class="spin-content"
+        :loading="loading"
         :bordered="true"
         style="width:100%">
         <component

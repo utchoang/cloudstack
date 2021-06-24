@@ -164,7 +164,7 @@ export default {
 </script>
 
 <style scoped>
-:v-deep(.ant-badge-status-dot) {
+:deep(.ant-badge-status-dot) {
   width: 12px;
   height: 12px;
   margin-top: 5px;

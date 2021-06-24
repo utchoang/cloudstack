@@ -105,8 +105,8 @@ const app = {
     setSidebar ({ commit }, type) {
       commit('SET_SIDEBAR_TYPE', type)
     },
-    CloseSidebar ({ commit }, ls) {
-      commit('CLOSE_SIDEBAR', ls)
+    CloseSidebar ({ commit }) {
+      commit('CLOSE_SIDEBAR')
     },
     ToggleDevice ({ commit }, device) {
       commit('TOGGLE_DEVICE', device)
@@ -146,9 +146,6 @@ const app = {
     },
     SetUseBrowserTimezone ({ commit }, bool) {
       commit('SET_USE_BROWSER_TIMEZONE', bool)
-    },
-    SetLocalStorage ({ commit }, ls) {
-      commit('SET_LOCAL_STORAGE', ls)
     }
   }
 }

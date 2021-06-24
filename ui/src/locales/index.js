@@ -13,8 +13,7 @@ export const i18n = createI18n({
 
 export function loadLanguageAsync (lang) {
   if (!lang) {
-    // lang = Vue.ls ? Vue.ls.get('LOCALE') || 'en' : 'en'
-    lang = 'en'
+    lang = Window.ls ? Window.ls.get('LOCALE') || 'en' : 'en'
   }
   if (loadedLanguage.includes(lang)) {
     return Promise.resolve(setLanguage(lang))

@@ -1,6 +1,5 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import { constantRouterMap } from '@/config/router'
-console.log(constantRouterMap)
 
 const router = createRouter({
   history: createWebHashHistory(process.env.BASE_URL),

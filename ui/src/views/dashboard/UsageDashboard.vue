@@ -154,7 +154,7 @@ export default {
     resource (newData, oldData) {
       this.project = newData
     },
-    '$i18n.locale' (to, from) {
+    '$i18n.global.locale' (to, from) {
       if (to !== from) {
         this.fetchData()
       }

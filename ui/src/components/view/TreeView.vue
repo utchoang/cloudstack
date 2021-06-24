@@ -42,8 +42,8 @@
               @select="onSelect"
               @expand="onExpand"
               :expandedKeys="arrExpand">
-              <template #parent><SearchOutlined /><FolderOutlined /></template>
-              <template #leaf><SearchOutlined /><BlockOutlined /></template>
+              <template #parent><FolderOutlined /></template>
+              <template #leaf><BlockOutlined /></template>
             </a-tree>
           </a-spin>
         </a-card>
@@ -60,18 +60,19 @@
             :animated="false"
             :defaultActiveKey="tabs[0].name"
             @change="onTabChange" >
-            <div v-for="tab in tabs" :tab="$t('label.' + tab.name)" :key="tab.name">
-              <a-tab-pane
-                v-if="checkShowTabDetail(tab)">
-                <component
-                  :is="tab.component"
-                  :resource="resource"
-                  :items="items"
-                  :tab="tabActive"
-                  :loading="loading"
-                  :bordered="false" />
+            <template v-for="tab in tabs" :tab="$t('label.' + tab.name)" :key="tab.name">
+              <a-tab-pane :tab="$t('label.' + tab.name)" :key="tab.name" v-if="checkShowTabDetail(tab)">
+                <keep-alive>
+                  <component
+                    :is="tab.component"
+                    :resource="resource"
+                    :items="items"
+                    :tab="tabActive"
+                    :loading="loading"
+                    :bordered="false" />
+                </keep-alive>
               </a-tab-pane>
-            </div>
+            </template>
           </a-tabs>
         </a-card>
       </a-spin>
@@ -563,7 +564,7 @@ export default {
 .list-tree-view {
   overflow-y: hidden;
 }
-:v-deep(.ant-tree).ant-tree-directory {
+:deep(.ant-tree).ant-tree-directory {
   li.ant-tree-treenode-selected {
     span.ant-tree-switcher {
       color: rgba(0, 0, 0, 0.65);
@@ -589,22 +590,22 @@ export default {
   }
 }
 
-:v-deep(.ant-tree) li span.ant-tree-switcher.ant-tree-switcher-noop {
+:deep(.ant-tree) li span.ant-tree-switcher.ant-tree-switcher-noop {
+  display: none
+}
+
+:deep(.ant-tree-node-content-wrapper-open) > span:first-child,
+:deep(.ant-tree-node-content-wrapper-close) > span:first-child {
   display: none;
 }
 
-:v-deep(.ant-tree-node-content-wrapper-open) > span:first-child,
-:v-deep(.ant-tree-node-content-wrapper-close) > span:first-child {
-  display: none;
-}
-
-:v-deep(.ant-tree-icon__customize) {
+:deep(.ant-tree-icon__customize) {
   color: rgba(0, 0, 0, 0.45);
   background: #fff;
   padding-right: 5px;
 }
 
-:v-deep(.ant-tree) li .ant-tree-node-content-wrapper {
+:deep(.ant-tree) li .ant-tree-node-content-wrapper {
   padding-left: 0;
   margin-left: 3px;
 }

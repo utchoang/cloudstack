@@ -302,8 +302,7 @@
         <div class="resource-detail-item" v-if="resource.ipaddress">
           <div class="resource-detail-item__label">{{ $t('label.ip') }}</div>
           <div class="resource-detail-item__details">
-            <a-icon
-              type="environment"
+            <EnvironmentOutlined
               @click="$message.success(`${$t('label.copied.clipboard')} : ${ ipaddress }`)"
               v-clipboard:copy="ipaddress" />
             <router-link v-if="resource.ipaddressid" :to="{ path: '/publicip/' + resource.ipaddressid }">{{ ipaddress }}</router-link>
@@ -566,13 +565,13 @@
       <div class="account-center-tags" v-if="showKeys">
         <a-divider/>
         <div class="user-keys">
-          <a-icon type="key" />
+          <KeyOutlined />
           <strong>
             {{ $t('label.apikey') }}
             <tooltip-button
               tooltipPlacement="right"
               :tooltip="$t('label.copy') + ' ' + $t('label.apikey')"
-              icon="copy"
+              icon="CopyOutlined"
               type="dashed"
               size="small"
               @onClick="$message.success($t('label.copied.clipboard'))"
@@ -583,13 +582,13 @@
           </div>
         </div> <br/>
         <div class="user-keys">
-          <a-icon type="lock" />
+          <LockOutlined />
           <strong>
             {{ $t('label.secretkey') }}
             <tooltip-button
               tooltipPlacement="right"
               :tooltip="$t('label.copy') + ' ' + $t('label.secretkey')"
-              icon="copy"
+              icon="CopyOutlined"
               type="dashed"
               size="small"
               @onClick="$message.success($t('label.copied.clipboard'))"
@@ -622,12 +621,12 @@
                 <a-input ref="input" :value="inputKey" @change="handleKeyChange" style="width: 30%; text-align: center" :placeholder="$t('label.key')" />
                 <a-input style=" width: 30px; border-left: 0; pointer-events: none; backgroundColor: #fff" placeholder="=" disabled />
                 <a-input :value="inputValue" @change="handleValueChange" style="width: 30%; text-align: center; border-left: 0" :placeholder="$t('label.value')" />
-                <tooltip-button :tooltip="$t('label.ok')" icon="check" size="small" @click="handleInputConfirm" />
-                <tooltip-button :tooltip="$t('label.cancel')" icon="close" size="small" @click="inputVisible=false" />
+                <tooltip-button :tooltip="$t('label.ok')" icon="CheckOutlined" size="small" @click="handleInputConfirm" />
+                <tooltip-button :tooltip="$t('label.cancel')" icon="CloseOutlined" size="small" @click="inputVisible=false" />
               </a-input-group>
             </div>
             <a-tag @click="showInput" style="background: #fff; borderStyle: dashed;" v-else-if="isAdminOrOwner() && 'createTags' in $store.getters.apis">
-              <a-icon type="plus" /> {{ $t('label.new.tag') }}
+              <PlusOutlined /> {{ $t('label.new.tag') }}
             </a-tag>
           </div>
         </a-spin>
@@ -666,9 +665,9 @@
 
           <a-comment v-if="'addAnnotation' in $store.getters.apis">
             <template v-slot:avatar>
-            <a-avatar
-              icon="edit"
-              @click="showNotesInput = true" />
+            <a-avatar @click="showNotesInput = true">
+              <template #icon><EditOutlined /></template>
+            </a-avatar>
             </template>
             <template v-slot:content>
               <a-textarea
@@ -940,7 +939,7 @@ export default {
 
 <style lang="scss" scoped>
 
-:v-deep(.ant-card-body) {
+:deep(.ant-card-body) {
   padding: 30px;
 }
 
