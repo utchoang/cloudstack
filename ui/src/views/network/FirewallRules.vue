@@ -122,11 +122,11 @@
       <a-divider></a-divider>
 
       <div class="tags-container">
-        <template class="tags" v-for="(tag) in tags" :key="tag.key">
+        <span class="tags" v-for="(tag) in tags" :key="tag.key">
           <a-tag :key="tag.key" :closable="'deleteTags' in $store.getters.apis" :afterClose="() => handleDeleteTag(tag)">
             {{ tag.key }} = {{ tag.value }}
           </a-tag>
-        </template>
+        </span>
       </div>
 
       <a-button class="add-tags-done" @click="tagsModalVisible = false" type="primary">{{ $t('label.done') }}</a-button>

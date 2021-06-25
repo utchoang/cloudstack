@@ -34,7 +34,7 @@ function generateRouterMap (section) {
     path: '/' + section.name,
     hidden: section.hidden,
     meta: { title: section.title, icon: section.icon, docHelp: window.appPrototype.$applyDocHelpMappings(section.docHelp), searchFilters: section.searchFilters },
-    component: RouteView
+    component: shallowRef(RouteView)
   }
 
   if (section.children && section.children.length > 0) {
@@ -221,7 +221,7 @@ export function asyncRouterMap () {
       {
         path: '/exception',
         name: 'exception',
-        component: RouteView,
+        component: shallowRef(RouteView),
         hidden: true,
         redirect: '/exception/404',
         meta: { title: 'Exception', icon: 'warning' },

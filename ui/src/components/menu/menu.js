@@ -137,15 +137,12 @@ export default {
       if (!menu.hideChildrenInMenu) {
         menu.children.forEach(item => itemArr.push(this.renderItem(item)))
       }
-      console.log(menu.children)
       return (
         <SubMenu {...{ key: menu.path }}>
-          <template v-slot:title>
-            <span>
-              {this.renderIcon(menu.meta.icon, menu)}
-              <span {...{ on: on }}>{this.$t(menu.meta.title)}</span>
-            </span>
-          </template>
+          <span>
+            {this.renderIcon(menu.meta.icon, menu)}
+            <span {...{ on: on }}>{this.$t(menu.meta.title)}</span>
+          </span>
           {itemArr}
         </SubMenu>
       )

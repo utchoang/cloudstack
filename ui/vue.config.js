@@ -96,21 +96,29 @@ const vueConfig = {
       opts => ({ ...opts, emitWarning: false })
     )
 
-    // const svgRule = config.module.rule('svg')
-    // svgRule.uses.clear()
+    const svgRule = config.module.rule('svg')
+    svgRule.uses.clear()
     // svgRule
     //   .oneOf('inline')
     //   .resourceQuery(/inline/)
-    //   .use('vue-svg-icon-loader')
-    //   .loader('vue-svg-icon-loader')
+    //   .use('vue-loader')
+    //   .loader('vue-loader')
     //   .end()
     //   .end()
     //   .oneOf('external')
-    //   .use('file-loader')
-    //   .loader('file-loader')
+    //   .use('vue-svg-loader')
+    //   .loader('vue-svg-loader')
     //   .options({
     //     name: 'assets/[name].[hash:8].[ext]'
     //   })
+
+    svgRule
+      .use('vue-loader')
+      .loader('vue-loader')
+      .end()
+      .use('vue-svg-loader')
+      .loader('vue-svg-loader')
+
     /* svgRule.oneOf('inline')
       .resourceQuery(/inline/)
       .use('vue-svg-loader')

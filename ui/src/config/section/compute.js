@@ -16,7 +16,7 @@
 // under the License.
 
 import { shallowRef, defineAsyncComponent } from 'vue'
-// import kubernetes from '@/assets/icons/kubernetes.svg?inline'
+import kubernetes from '@/assets/icons/kubernetes.svg?inline'
 import store from '@/store'
 
 export default {
@@ -415,7 +415,7 @@ export default {
     {
       name: 'kubernetes',
       title: 'label.kubernetes',
-      // icon: kubernetes,
+      icon: kubernetes,
       docHelp: 'plugins/cloudstack-kubernetes-service.html',
       permission: ['listKubernetesClusters'],
       columns: () => {

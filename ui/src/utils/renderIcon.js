@@ -22,7 +22,11 @@ export default {
   props: {
     icon: {
       type: String,
-      required: true
+      default: ''
+    },
+    svgIcon: {
+      type: Object,
+      default: {}
     },
     props: {
       type: Object,
@@ -34,6 +38,10 @@ export default {
     }
   },
   render () {
-    return h(resolveComponent(this.icon), this.props, this.event)
+    if (this.icon) {
+      return h(resolveComponent(this.icon), this.props, this.event)
+    }
+
+    return h(this.svgIcon, this.props, this.event)
   }
 }
