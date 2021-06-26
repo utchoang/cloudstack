@@ -415,7 +415,7 @@ export default {
     {
       name: 'kubernetes',
       title: 'label.kubernetes',
-      icon: kubernetes,
+      icon: shallowRef(kubernetes),
       docHelp: 'plugins/cloudstack-kubernetes-service.html',
       permission: ['listKubernetesClusters'],
       columns: () => {

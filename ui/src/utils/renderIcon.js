@@ -37,11 +37,26 @@ export default {
       default: {}
     }
   },
+  methods: {
+    renderIcon () {
+      return h(resolveComponent(this.icon), this.props, this.event)
+    },
+    renderSvgIcon () {
+      const props = Object.assign({}, this.props)
+      props.width = '1em'
+      props.height = '1em'
+      props.class = 'custom-icon'
+
+      return h('span', { role: 'img', class: 'anticon' }, [
+        h(this.svgIcon, { ...props }, this.event)
+      ])
+    }
+  },
   render () {
     if (this.icon) {
-      return h(resolveComponent(this.icon), this.props, this.event)
+      return this.renderIcon()
     }
 
-    return h(this.svgIcon, this.props, this.event)
+    return this.renderSvgIcon()
   }
 }

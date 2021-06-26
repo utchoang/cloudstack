@@ -87,7 +87,14 @@ import {
   InfoCircleOutlined,
   FolderOutlined,
   LinkOutlined,
-  InboxOutlined
+  InboxOutlined,
+  DragOutlined,
+  ArrowsAltOutlined,
+  ScissorOutlined,
+  CameraOutlined,
+  PoweroffOutlined,
+  PaperClipOutlined,
+  CodeOutlined
 } from '@ant-design/icons-vue'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -175,5 +182,12 @@ export default {
     app.component('FolderOutlined', FolderOutlined)
     app.component('LinkOutlined', LinkOutlined)
     app.component('InboxOutlined', InboxOutlined)
+    app.component('DragOutlined', DragOutlined)
+    app.component('ArrowsAltOutlined', ArrowsAltOutlined)
+    app.component('ScissorOutlined', ScissorOutlined)
+    app.component('CameraOutlined', CameraOutlined)
+    app.component('PoweroffOutlined', PoweroffOutlined)
+    app.component('PaperClipOutlined', PaperClipOutlined)
+    app.component('CodeOutlined', CodeOutlined)
   }
 }

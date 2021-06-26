@@ -211,7 +211,7 @@ export default {
   }
 }
 
-/deep/.ant-btn > .anticon {
+:deep(.ant-btn) > .anticon {
   line-height: 1.8;
 }
 </style>

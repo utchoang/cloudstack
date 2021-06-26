@@ -104,7 +104,6 @@ export default {
   },
   created () {
     this.updateMenu()
-    console.log(this.menu)
   },
   watch: {
     collapsed (val) {
