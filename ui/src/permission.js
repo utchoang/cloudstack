@@ -62,6 +62,7 @@ export default {
                     router.addRoute(route)
                   })
                   const redirect = decodeURIComponent(from.query.redirect || to.path)
+                  console.log(redirect)
                   if (to.path === redirect) {
                     next({ ...to, replace: true })
                   } else {

@@ -26,13 +26,13 @@
           :dataSource="dataSource"
           :pagination="false"
           :rowKey="record => record.userid ? record.userid : (record.accountid || record.account)">
-          <template v-slot:user="text, record" v-if="record.userid">
+          <template #user="text, record" v-if="record.userid">
             {{ record.username }}
           </template>
-          <template v-slot:projectrole="text, record" v-if="record.projectroleid">
+          <template #projectrole="text, record" v-if="record.projectroleid">
             {{ getProjectRole(record) }}
           </template>
-          <template v-slot:action="text, record" v-if="record.projectroleid">
+          <template #action="text, record" v-if="record.projectroleid">
             <span v-if="imProjectAdmin && dataSource.length > 1" class="account-button-action">
               <tooltip-button
                 tooltipPlacement="top"
@@ -72,7 +72,7 @@
           @change="changePage"
           @showSizeChange="changePageSize"
           showSizeChanger>
-          <template v-slot:buildOptionText="props">
+          <template #buildOptionText="props">
             <span>{{ props.value }} / {{ $t('label.page') }}</span>
           </template>
         </a-pagination>

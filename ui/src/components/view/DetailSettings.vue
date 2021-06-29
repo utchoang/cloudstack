@@ -41,7 +41,7 @@
             ref="keyElm"
             :filterOption="filterOption"
             :value="newKey"
-            :dataSource="Object.keys(detailOptions)"
+            :options="Object.keys(detailOptions)"
             :placeholder="$t('label.name')"
             @change="e => onAddInputChange(e, 'newKey')" />
           <a-input style=" width: 30px; border-left: 0; pointer-events: none; backgroundColor: #fff" placeholder="=" disabled />
@@ -49,7 +49,7 @@
             class="detail-input"
             :filterOption="filterOption"
             :value="newValue"
-            :dataSource="detailOptions[newKey]"
+            :options="detailOptions[newKey]"
             :placeholder="$t('label.value')"
             @change="e => onAddInputChange(e, 'newValue')" />
           <tooltip-button :tooltip="$t('label.add.setting')" icon="check" @onClick="addDetail" buttonClass="detail-button" />
@@ -69,7 +69,7 @@
               <a-auto-complete
                 style="width: 100%"
                 :value="item.value"
-                :dataSource="detailOptions[item.name]"
+                :options="detailOptions[item.name]"
                 @change="val => handleInputChange(val, index)"
                 @pressEnter="e => updateDetail(index)" />
             </span>

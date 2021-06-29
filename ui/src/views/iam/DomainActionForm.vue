@@ -56,67 +56,61 @@
                 </a-tooltip>
               </template>
 
-              <span v-if="field.type==='boolean'">
-                <a-switch
-                  v-model:checked="form[field.name]"
-                  :placeholder="field.description"
-                />
-              </span>
-              <span v-else-if="action.mapping && field.name in action.mapping && action.mapping[field.name].options">
-                <a-select
-                  :loading="field.loading"
-                  v-model:value="form[field.name]"
-                  :placeholder="field.description"
-                  :autoFocus="fieldIndex === firstIndex"
-                >
-                  <a-select-option v-for="(opt, optIndex) in action.mapping[field.name].options" :key="optIndex">
-                    {{ opt }}
-                  </a-select-option>
-                </a-select>
-              </span>
-              <span v-else-if="field.type==='uuid' || field.name==='account'">
-                <a-select
-                  showSearch
-                  optionFilterProp="children"
-                  v-model:value="form[field.name]"
-                  :loading="field.loading"
-                  :placeholder="field.description"
-                  :filterOption="(input, option) => {
-                    return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                  }"
-                  :autoFocus="fieldIndex === firstIndex"
-                >
-                  <a-select-option v-for="(opt, optIndex) in field.opts" :key="optIndex">
-                    {{ opt.name || opt.description || opt.traffictype || opt.publicip }}
-                  </a-select-option>
-                </a-select>
-              </span>
-              <span v-else-if="field.type==='list'">
-                <a-select
-                  :loading="field.loading"
-                  mode="multiple"
-                  v-model:value="form[field.name]"
-                  :placeholder="field.description"
-                  :autoFocus="fieldIndex === firstIndex"
-                >
-                  <a-select-option v-for="(opt, optIndex) in field.opts" :key="optIndex">
-                    {{ opt.name && opt.type ? opt.name + ' (' + opt.type + ')' : opt.name || opt.description }}
-                  </a-select-option>
-                </a-select>
-              </span>
-              <span v-else-if="field.type==='long'">
-                <a-input-number
-                  v-model:value="form[field.name]"
-                  :placeholder="field.description"
-                  :autoFocus="fieldIndex === firstIndex"
-                />
-              </span>
-              <span v-else>
-                <a-input
-                  v-model:value="form[field.name]"
-                  :placeholder="field.description"
-                  :autoFocus="fieldIndex === firstIndex" />
-              </span>
+              <a-switch
+                v-if="field.type==='boolean'"
+                v-model:checked="form[field.name]"
+                :placeholder="field.description"
+              />
+              <a-select
+                v-else-if="action.mapping && field.name in action.mapping && action.mapping[field.name].options"
+                :loading="field.loading"
+                v-model:value="form[field.name]"
+                :placeholder="field.description"
+                :autoFocus="fieldIndex === firstIndex"
+              >
+                <a-select-option v-for="(opt, optIndex) in action.mapping[field.name].options" :key="optIndex">
+                  {{ opt }}
+                </a-select-option>
+              </a-select>
+              <a-select
+                v-else-if="field.type==='uuid' || field.name==='account'"
+                showSearch
+                optionFilterProp="children"
+                v-model:value="form[field.name]"
+                :loading="field.loading"
+                :placeholder="field.description"
+                :filterOption="(input, option) => {
+                  return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }"
+                :autoFocus="fieldIndex === firstIndex"
+              >
+                <a-select-option v-for="(opt, optIndex) in field.opts" :key="optIndex">
+                  {{ opt.name || opt.description || opt.traffictype || opt.publicip }}
+                </a-select-option>
+              </a-select>
+              <a-select
+                v-else-if="field.type==='list'"
+                :loading="field.loading"
+                mode="multiple"
+                v-model:value="form[field.name]"
+                :placeholder="field.description"
+                :autoFocus="fieldIndex === firstIndex"
+              >
+                <a-select-option v-for="(opt, optIndex) in field.opts" :key="optIndex">
+                  {{ opt.name && opt.type ? opt.name + ' (' + opt.type + ')' : opt.name || opt.description }}
+                </a-select-option>
+              </a-select>
+              <a-input-number
+                v-else-if="field.type==='long'"
+                v-model:value="form[field.name]"
+                :placeholder="field.description"
+                :autoFocus="fieldIndex === firstIndex"
+              />
+              <a-input
+                v-else
+                v-model:value="form[field.name]"
+                :placeholder="field.description"
+                :autoFocus="fieldIndex === firstIndex" />
             </a-form-item>
           </template>
         </a-form>
@@ -145,19 +139,15 @@ export default {
       default: () => {}
     }
   },
-  beforeCreate () {
+  created () {
     this.formRef = ref()
     this.form = reactive({})
     this.rules = reactive({})
-  },
-  created () {
     let isFirstIndexSet = false
     this.firstIndex = 0
     this.action.paramFields.forEach((field, fieldIndex) => {
       this.form[field.name] = undefined
-      if (field.type === 'boolean') {
-        this.form[field.name] = false
-      }
+      this.rules[field.name] = []
       this.setRules(field)
       if (!isFirstIndexSet && !(this.action.mapping && field.name in this.action.mapping && this.action.mapping[field.name].value)) {
         this.firstIndex = fieldIndex
@@ -289,7 +279,6 @@ export default {
       })
     },
     fillEditFormFieldValues () {
-      const form = this.form
       this.action.paramFields.map(field => {
         let fieldName = null
         if (field.type === 'uuid' ||
@@ -302,7 +291,7 @@ export default {
         }
         const fieldValue = this.resource[fieldName] ? this.resource[fieldName] : null
         if (fieldValue) {
-          form.getFieldDecorator(field.name, { initialValue: fieldValue })
+          this.form[field.name] = fieldValue
         }
       })
     },
@@ -333,13 +322,11 @@ export default {
         case (field.type === 'long'):
           rule.required = field.required
           rule.message = this.$t('message.validate.number')
-          rule.trigger = 'change'
           this.rules[field.name].push(rule)
           break
         default:
           rule.required = field.required
           rule.message = this.$t('message.error.required.input')
-          rule.trigger = 'change'
           this.rules[field.name].push(rule)
           break
       }

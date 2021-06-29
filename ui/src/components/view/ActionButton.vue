@@ -18,7 +18,7 @@
 <template>
   <span class="row-action-button">
     <a-tooltip arrowPointAtCenter placement="bottomRight" v-if="resource && resource.id && dataView">
-      <template v-slot:title>
+      <template #title>
         {{ $t('label.view.console') }}
       </template>
       <console :resource="resource" :size="size" />
@@ -28,7 +28,7 @@
       :key="actionIndex"
       arrowPointAtCenter
       placement="bottomRight">
-      <template v-slot:title>
+      <template #title>
         {{ $t(action.label) }}
       </template>
       <a-badge

@@ -20,7 +20,7 @@
     <span class="action ant-dropdown-link translation-menu">
       <TranslationOutlined />
     </span>
-    <template v-slot:overlay>
+    <template #overlay>
       <a-menu
         :selectedKeys="[language]"
         @click="onClick">
@@ -74,10 +74,9 @@ export default {
       this.setLocale(localeValue)
     },
     setLocale (localeValue) {
-      // this.$locale = localeValue
       this.$i18n.locale = localeValue
       this.language = localeValue
-      // // moment.locale(localeValue)
+      moment.locale(localeValue)
       this.$localStorage.set('LOCALE', localeValue)
       loadLanguageAsync(localeValue)
     }

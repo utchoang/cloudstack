@@ -138,7 +138,7 @@ export default {
         .finally(() => { this.loading = false })
     },
     handleSubmit () {
-      this.formRef.validate().then(() => {
+      this.formRef.value.validate().then(() => {
         const values = toRaw(this.form)
         const params = {}
         params.volumeid = values.volumeid

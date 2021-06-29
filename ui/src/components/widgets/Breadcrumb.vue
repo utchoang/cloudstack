@@ -42,7 +42,7 @@
       </span>
       <span v-if="index === (breadList.length - 1)" style="margin-left: 5px">
         <a-tooltip placement="bottom">
-          <template v-slot:title>
+          <template #title>
             {{ $t('label.open.documentation') }}
           </template>
           <a

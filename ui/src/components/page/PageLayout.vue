@@ -19,9 +19,9 @@
   <div :style="!$route.meta.pageHeader ? 'margin: -24px -24px 0px;' : null">
     <!-- pageHeader , route meta hideHeader:true on hide -->
     <page-header v-if="!$route.meta.pageHeader" :title="title" :logo="logo" :avatar="avatar">
-      <template v-slot:action><slot name="action"></slot></template>
-      <template v-slot:content><slot name="headerContent"></slot></template>
-      <template v-slot:slot:content v-if="!this.$slots.headerContent && desc">
+      <template #action><slot name="action"></slot></template>
+      <template #content><slot name="headerContent"></slot></template>
+      <template #slot:content v-if="!this.$slots.headerContent && desc">
         <p style="font-size: 14px;color: rgba(0,0,0,.65)">{{ desc }}</p>
         <div class="link">
           <template v-for="(link, index) in linkList" :key="index">
@@ -32,8 +32,8 @@
           </template>
         </div>
       </template>
-      <template v-slot:extra><slot name="extra"></slot></template>
-      <template v-slot:pageMenu>
+      <template #extra><slot name="extra"></slot></template>
+      <template #pageMenu>
         <div class="page-menu-search" v-if="search">
           <a-input-search style="width: 80%; max-width: 522px;" placeholder="请输入..." size="large" enterButton="搜索" />
         </div>

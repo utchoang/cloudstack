@@ -28,7 +28,7 @@
         :rules="rules"
         @submit="handleSubmit"
         layout="vertical">
-        <div v-if="this.$store.getters.userInfo.roletype === 'Admin'">
+        <div v-if="$store.getters.userInfo.roletype === 'Admin'">
           <a-form-item>
             <template #label>
               {{ $t('label.podid') }}
@@ -46,8 +46,8 @@
               :loading="podsLoading"
               :placeholder="apiParams.podid.description"
               @change="handlePodChange"
-              :autoFocus="this.$store.getters.userInfo.roletype === 'Admin'">
-              <a-select-option v-for="pod in this.pods" :key="pod.id">
+              :autoFocus="$store.getters.userInfo.roletype === 'Admin'">
+              <a-select-option v-for="pod in pods" :key="pod.id">
                 {{ pod.name }}
               </a-select-option>
             </a-select>
@@ -70,7 +70,7 @@
               :loading="clustersLoading"
               :placeholder="apiParams.clusterid.description"
               @change="handleClusterChange">
-              <a-select-option v-for="cluster in this.clusters" :key="cluster.id">
+              <a-select-option v-for="cluster in clusters" :key="cluster.id">
                 {{ cluster.name }}
               </a-select-option>
             </a-select>
@@ -92,7 +92,7 @@
               }"
               :loading="hostsLoading"
               :placeholder="apiParams.hostid.description">
-              <a-select-option v-for="host in this.hosts" :key="host.id">
+              <a-select-option v-for="host in hosts" :key="host.id">
                 {{ host.name }}
               </a-select-option>
             </a-select>
@@ -112,8 +112,8 @@
         </a-form-item>
 
         <div :span="24" class="action-button">
-          <a-button @click="closeAction">{{ this.$t('label.cancel') }}</a-button>
-          <a-button :loading="loading" type="primary" @click="handleSubmit">{{ this.$t('label.ok') }}</a-button>
+          <a-button @click="closeAction">{{ $t('label.cancel') }}</a-button>
+          <a-button :loading="loading" type="primary" @click="handleSubmit">{{ $t('label.ok') }}</a-button>
         </div>
       </a-form>
     </a-spin>
@@ -167,7 +167,7 @@ export default {
       this.form.podid = undefined
       this.form.clusterid = undefined
       this.form.hostid = undefined
-      this.form.bootintosetup = false
+      this.form.bootintosetup = undefined
     },
     fetchPods () {
       this.pods = []
@@ -227,17 +227,17 @@ export default {
       })
     },
     handlePodChange (podid) {
-      this.form.clearField('clusterid')
-      this.form.clearField('hostid')
+      this.form.clusterid = undefined
+      this.form.hostid = undefined
       this.fetchClusters(podid)
       this.fetchHosts(podid)
     },
     handleClusterChange (clusterid) {
-      this.form.clearField('hostid')
+      this.form.hostid = undefined
       this.fetchHosts('', clusterid)
     },
     handleSubmit () {
-      this.formRef.validate().then(() => {
+      this.formRef.value.validate().then(() => {
         const values = toRaw(this.form)
 
         this.loading = true

@@ -28,7 +28,7 @@
           :pagination="false"
           v-if="!quickview"
         >
-          <template v-slot:action="text, record" class="cert-button-action">
+          <template #action="text, record" class="cert-button-action">
             <tooltip-button
               tooltipPlacement="top"
               :tooltip="$t('label.quickview')"
@@ -51,7 +51,7 @@
           <div class="close-quickview">
             <a-button @click="() => { this.quickview = false }">{{ $t('label.close') }}</a-button>
           </div>
-          <template v-slot:renderItem="item">
+          <template #renderItem="item">
             <a-list-item v-if="item in detail">
                 <div>
                   <strong>{{ $t(item) }}</strong>

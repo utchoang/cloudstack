@@ -129,7 +129,7 @@ export default {
         {
           title: this.$t('label.action'),
           dataIndex: 'action',
-          width: 50,
+          width: 80,
           scopedSlots: { customRender: 'action' }
         }
       ]

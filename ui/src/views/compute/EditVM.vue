@@ -89,12 +89,12 @@
              <info-circle-outlined style="color: rgba(0,0,0,.45)" />
           </a-tooltip>
         </template>
-        <a-auto-complete
+        <this.formRef.value.validate()omplete
           v-model:value="form.group"
           :filterOption="(input, option) => {
             return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
           }"
-          :dataSource="groups.opts" />
+          :options="groups.opts" />
       </a-form-item>
 
       <div :span="24" class="action-button">
@@ -187,7 +187,7 @@ export default {
       }).finally(() => { this.groups.loading = false })
     },
     handleSubmit () {
-      this.formRef.validate().then(() => {
+      this.formRef.value.validate().then(() => {
         const values = toRaw(this.form)
         const params = {}
         params.id = this.resource.id

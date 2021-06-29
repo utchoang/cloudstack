@@ -23,7 +23,7 @@
         @submit="handleSubmit"
         layout="vertical">
         <a-form-item v-if="!this.isAdminOrDomainAdmin()">
-          <template v-slot:label>
+          <template #label>
             {{ $t('label.currentpassword') }}
             <a-tooltip :title="apiParams.currentpassword.description">
               <a-icon type="info-circle" style="color: rgba(0,0,0,.45)" />
@@ -37,7 +37,7 @@
             autoFocus />
         </a-form-item>
         <a-form-item>
-          <template v-slot:label>
+          <template #label>
             {{ $t('label.new.password') }}
             <a-tooltip :title="apiParams.password.description">
               <a-icon type="info-circle" style="color: rgba(0,0,0,.45)" />
@@ -50,7 +50,7 @@
             :placeholder="$t('label.new.password')"/>
         </a-form-item>
         <a-form-item>
-          <template v-slot:label>
+          <template #label>
             {{ $t('label.confirmpassword') }}
             <a-tooltip :title="apiParams.password.description">
               <a-icon type="info-circle" style="color: rgba(0,0,0,.45)" />

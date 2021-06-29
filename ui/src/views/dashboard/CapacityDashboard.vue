@@ -60,7 +60,7 @@
                   :width="100" />
               </div>
             </router-link>
-            <template v-slot:footer>
+            <template #footer>
               <center>{{ displayData(stat.name, stat.capacityused) }} / {{ displayData(stat.name, stat.capacitytotal) }}</center>
             </template>
           </chart-card>
@@ -72,7 +72,7 @@
       <chart-card :loading="loading">
         <div style="text-align: center">
           <a-tooltip placement="bottom" class="capacity-dashboard-button-wrapper">
-            <template v-slot:title>
+            <template #title>
               {{ $t('label.view') + ' ' + $t('label.host.alerts') }}
             </template>
             <a-button type="danger" shape="circle">
@@ -82,7 +82,7 @@
             </a-button>
           </a-tooltip>
           <a-tooltip placement="bottom" class="capacity-dashboard-button-wrapper">
-            <template v-slot:title>
+            <template #title>
               {{ $t('label.view') + ' ' + $t('label.alerts') }}
             </template>
             <a-button shape="circle">
@@ -92,7 +92,7 @@
             </a-button>
           </a-tooltip>
           <a-tooltip placement="bottom" class="capacity-dashboard-button-wrapper">
-            <template v-slot:title>
+            <template #title>
               {{ $t('label.view') + ' ' + $t('label.events') }}
             </template>
             <a-button shape="circle">
@@ -102,7 +102,7 @@
             </a-button>
           </a-tooltip>
         </div>
-        <template v-slot:footer>
+        <template #footer>
           <div class="capacity-dashboard-footer">
             <a-timeline>
               <a-timeline-item

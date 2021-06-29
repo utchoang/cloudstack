@@ -22,7 +22,7 @@
         :model="form"
         :rules="rules"
         layout="vertical">
-        <a-form-item :label="$t('label.iso.name')">
+        <a-form-item :label="$t('label.iso.name')" ref="id" name="id">
           <a-select
             :loading="loading"
             v-model:value="form.id"
@@ -32,13 +32,17 @@
             </a-select-option>
           </a-select>
         </a-form-item>
-        <a-form-item :label="$t('label.forced')" v-if="resource && resource.hypervisor === 'VMware'">
+        <a-form-item
+          :label="$t('label.forced')"
+          v-if="resource && resource.hypervisor === 'VMware'"
+          ref="forced"
+          name="forced">
           <a-switch v-model:checked="form.forced" :auto-focus="true" />
         </a-form-item>
       </a-form>
       <div :span="24" class="action-button">
-        <a-button @click="closeAction">{{ this.$t('label.cancel') }}</a-button>
-        <a-button :loading="loading" type="primary" @click="handleSubmit">{{ this.$t('label.ok') }}</a-button>
+        <a-button @click="closeAction">{{ $t('label.cancel') }}</a-button>
+        <a-button :loading="loading" type="primary" htmlType="submit" @click="handleSubmit">{{ $t('label.ok') }}</a-button>
       </div>
     </a-spin>
   </div>
@@ -119,7 +123,7 @@ export default {
       this.$emit('close-action')
     },
     handleSubmit () {
-      this.formRef.validate().then(() => {
+      this.formRef.value.validate().then(() => {
         const values = toRaw(this.form)
         const params = {
           id: values.id,

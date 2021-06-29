@@ -190,7 +190,7 @@ export default {
       this.selectedDomain = domain
     },
     handleSubmit () {
-      this.formRef.validate().then(() => {
+      this.formRef.value.validate().then(() => {
         const values = toRaw(this.form)
         this.loading = true
         const params = {

@@ -77,8 +77,8 @@ export default {
           icon: 'plus-outlined',
           label: 'label.vm.add',
           docHelp: 'adminguide/virtual_machines.html#creating-vms',
-          listView: true
-          // component: shallowRef(defineAsyncComponent(() => import('@/views/compute/DeployVM.vue')))
+          listView: true,
+          component: () => import('@/views/compute/DeployVM.vue')
         },
         {
           api: 'updateVirtualMachine',
@@ -307,7 +307,7 @@ export default {
           dataView: true,
           show: (record, store) => { return ['Running'].includes(record.state) && ['Admin'].includes(store.userInfo.roletype) },
           popup: true,
-          component: shallowRef(defineAsyncComponent(() => import('@/views/compute/MigrateWizard')))
+          component: shallowRef(defineAsyncComponent(() => import('@/views/compute/MigrateWizard.vue')))
         },
         {
           api: 'migrateVirtualMachine',

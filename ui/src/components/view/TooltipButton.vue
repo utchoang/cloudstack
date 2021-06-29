@@ -17,7 +17,7 @@
 
 <template>
   <a-tooltip arrowPointAtCenter :placement="tooltipPlacement">
-    <template v-slot:title v-if="tooltip">
+    <template #title v-if="tooltip">
       {{ tooltip }}
     </template>
     <a-button

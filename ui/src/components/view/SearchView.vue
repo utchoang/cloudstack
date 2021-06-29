@@ -43,10 +43,9 @@
             <template #content v-if="visibleFilter">
               <a-form
                 style="min-width: 170px"
+                :ref="formRef"
                 :model="form"
-                :rules="rules"
-                layout="vertical"
-                @submit="handleSubmit">
+                layout="vertical">
                 <a-form-item
                   v-for="(field, index) in fields"
                   :key="index"
@@ -114,7 +113,7 @@
 </template>
 
 <script>
-import { reactive } from 'vue'
+import { ref, reactive, toRaw } from 'vue'
 import { api } from '@/api'
 import TooltipButton from '@/components/view/TooltipButton.vue'
 
@@ -148,7 +147,8 @@ export default {
       isFiltered: false
     }
   },
-  beforeCreate () {
+  created () {
+    this.formRef = ref()
     this.form = reactive({})
     this.rules = reactive({})
   },
@@ -226,7 +226,6 @@ export default {
           loading: false
         })
         arrayField.push(item)
-        this.form[item] = null
       })
 
       const promises = []
@@ -429,11 +428,7 @@ export default {
       this.parentSearch({ searchQuery: this.searchQuery })
     },
     onClear () {
-      this.searchFilters.map(item => {
-        const field = {}
-        field[item] = undefined
-        this.form.setFieldsValue(field)
-      })
+      this.formRef.value.resetFields()
       this.isFiltered = false
       this.inputKey = null
       this.inputValue = null
@@ -441,13 +436,10 @@ export default {
       this.paramsFilter = {}
       this.parentSearch(this.paramsFilter)
     },
-    handleSubmit (e) {
-      e.preventDefault()
+    handleSubmit () {
       this.paramsFilter = {}
-      this.form.validateFields((err, values) => {
-        if (err) {
-          return
-        }
+      this.formRef.value.validate().then(() => {
+        const values = toRaw(this.form)
         this.isFiltered = true
         for (const key in values) {
           const input = values[key]

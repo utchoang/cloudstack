@@ -26,9 +26,9 @@
               @click="$message.success(`${$t('label.copied.clipboard')} : ${name}`)"
               v-clipboard:copy="name" >
               <slot name="avatar">
-                <os-logo v-if="resource.ostypeid || resource.ostypename" :osId="resource.ostypeid" :osName="resource.ostypename" size="4x" @update-osname="(name) => this.$set(this.resource, 'ostypename', name)"/>
+                <os-logo v-if="resource.ostypeid || resource.ostypename" :osId="resource.ostypeid" :osName="resource.ostypename" size="4x" @update-osname="setResourceOsType"/>
                 <render-icon v-else-if="typeof $route.meta.icon ==='string'" style="font-size: 36px" :icon="$route.meta.icon" />
-                <!-- <a-icon v-else style="font-size: 36px" :component="$route.meta.icon" /> -->
+                <render-icon v-else :svgIcon="$route.meta.icon" />
               </slot>
             </div>
             <slot name="name">
@@ -73,7 +73,7 @@
                 {{ resource.version }}
               </a-tag>
               <a-tooltip placement="right" >
-                <template v-slot:title>
+                <template #title>
                   <span>{{ $t('label.view.console') }}</span>
                 </template>
                 <console style="margin-top: -5px;" :resource="resource" size="default" v-if="resource.id" />
@@ -643,12 +643,12 @@
             :dataSource="notes"
             itemLayout="horizontal"
             size="small" >
-            <template v-slot:renderItem="item">
+            <template #renderItem="item">
               <a-list-item>
                 <a-comment
                   :content="item.annotation"
                   :datetime="$toLocaleDate(item.created)" >
-                  <template v-slot:avatar>
+                  <template #avatar>
                     <a-button
                       v-if="'removeAnnotation' in $store.getters.apis"
                       type="danger"
@@ -664,12 +664,12 @@
           </a-list>
 
           <a-comment v-if="'addAnnotation' in $store.getters.apis">
-            <template v-slot:avatar>
+            <template #avatar>
             <a-avatar @click="showNotesInput = true">
               <template #icon><EditOutlined /></template>
             </a-avatar>
             </template>
-            <template v-slot:content>
+            <template #content>
               <a-textarea
                 rows="4"
                 @change="handleNoteChange"
@@ -740,42 +740,47 @@ export default {
       showKeys: false,
       showNotesInput: false,
       loadingTags: false,
-      loadingAnnotations: false
+      loadingAnnotations: false,
+      newResource: {}
     }
   },
   watch: {
-    resource: function () {
-      this.resourceType = this.$route.meta.resourceType
-      this.annotationType = ''
-      this.showKeys = false
-      this.setData()
+    resource: {
+      deep: true,
+      handler () {
+        this.newResource = this.resource
+        this.resourceType = this.$route.meta.resourceType
+        this.annotationType = ''
+        this.showKeys = false
+        this.setData()
 
-      switch (this.resourceType) {
-        case 'UserVm':
-          this.annotationType = 'VM'
-          break
-        case 'Domain':
-          this.annotationType = 'DOMAIN'
-          // Domain resource type is not supported for tags
-          this.resourceType = ''
-          break
-        case 'Host':
-          this.annotationType = 'HOST'
-          // Host resource type is not supported for tags
-          this.resourceType = ''
-          break
-      }
+        switch (this.resourceType) {
+          case 'UserVm':
+            this.annotationType = 'VM'
+            break
+          case 'Domain':
+            this.annotationType = 'DOMAIN'
+            // Domain resource type is not supported for tags
+            this.resourceType = ''
+            break
+          case 'Host':
+            this.annotationType = 'HOST'
+            // Host resource type is not supported for tags
+            this.resourceType = ''
+            break
+        }
 
-      if ('tags' in this.resource) {
-        this.tags = this.resource.tags
-      } else if (this.resourceType) {
-        this.getTags()
-      }
-      if (this.annotationType) {
-        this.getNotes()
-      }
-      if ('apikey' in this.resource) {
-        this.getUserKeys()
+        if ('tags' in this.resource) {
+          this.tags = this.resource.tags
+        } else if (this.resourceType) {
+          this.getTags()
+        }
+        if (this.annotationType) {
+          this.getNotes()
+        }
+        if ('apikey' in this.resource) {
+          this.getUserKeys()
+        }
       }
     }
   },
@@ -821,7 +826,8 @@ export default {
       }
       api('getUserKeys', { id: this.resource.id }).then(json => {
         this.showKeys = true
-        this.$set(this.resource, 'secretkey', json.getuserkeysresponse.userkeys.secretkey)
+        this.newResource.secretkey = json.getuserkeysresponse.userkeys.secretkey
+        this.$emit('change-resource', this.newResource)
       })
     },
     getTags () {
@@ -932,6 +938,10 @@ export default {
       }).finally(e => {
         this.getNotes()
       })
+    },
+    setResourceOsType (name) {
+      this.newResource.ostypename = name
+      this.$emit('change-resource', this.newResource)
     }
   }
 }

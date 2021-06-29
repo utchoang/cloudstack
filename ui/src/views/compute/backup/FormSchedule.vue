@@ -26,11 +26,10 @@
           :ref="formRef"
           :model="form"
           :rules="rules"
-          layout="vertical"
-          @submit="handleSubmit">
+          layout="vertical">
           <a-row :gutter="12">
             <a-col :md="24" :lg="24">
-              <a-form-item :label="$t('label.intervaltype')">
+              <a-form-item :label="$t('label.intervaltype')" ref="intervaltype" name="intervaltype">
                 <a-radio-group
                   v-model:value="form.intervaltype"
                   button-style="solid"
@@ -50,8 +49,8 @@
                 </a-radio-group>
               </a-form-item>
             </a-col>
-            <a-col :md="24" :lg="12" v-if="form.intervalType==='hourly'">
-              <a-form-item :label="$t('label.time')">
+            <a-col :md="24" :lg="12" v-if="form.intervaltype==='hourly'">
+              <a-form-item :label="$t('label.time')" ref="time" name="time">
                 <a-tooltip
                   placement="right"
                   :title="$t('label.minute.past.hour')">
@@ -64,18 +63,20 @@
                 </a-tooltip>
               </a-form-item>
             </a-col>
-            <a-col :md="24" :lg="12" v-if="['daily', 'weekly', 'monthly'].includes(form.intervalType)">
+            <a-col :md="24" :lg="12" v-if="['daily', 'weekly', 'monthly'].includes(form.intervaltype)">
               <a-form-item
                 class="custom-time-select"
-                :label="$t('label.time')">
+                :label="$t('label.time')"
+                ref="timeSelect"
+                name="timeSelect">
                 <a-time-picker
                   use12Hours
-                  valueFormat="h:mm A"
+                  format="h:mm A"
                   v-model:value="form.timeSelect" />
               </a-form-item>
             </a-col>
-            <a-col :md="24" :lg="12" v-if="form.intervalType==='weekly'">
-              <a-form-item :label="$t('label.day.of.week')">
+            <a-col :md="24" :lg="12" v-if="form.intervaltype==='weekly'">
+              <a-form-item :label="$t('label.day.of.week')" ref="day-of-week" name="day-of-week">
                 <a-select
                   v-model:value="form['day-of-week']" >
                   <a-select-option v-for="(opt, optIndex) in dayOfWeek" :key="optIndex">
@@ -84,8 +85,8 @@
                 </a-select>
               </a-form-item>
             </a-col>
-            <a-col :md="24" :lg="12" v-if="form.intervalType==='monthly'">
-              <a-form-item :label="$t('label.day.of.month')">
+            <a-col :md="24" :lg="12" v-if="form.intervaltype==='monthly'">
+              <a-form-item :label="$t('label.day.of.month')" ref="day-of-month" name="day-of-month">
                 <a-select
                   v-model:value="form['day-of-month']">
                   <a-select-option v-for="opt in dayOfMonth" :key="opt.name">
@@ -95,7 +96,7 @@
               </a-form-item>
             </a-col>
             <a-col :md="24" :lg="24">
-              <a-form-item :label="$t('label.timezone')">
+              <a-form-item :label="$t('label.timezone')" ref="timezone" name="timezone">
                 <a-select
                   showSearch
                   v-model:value="form.timezone"
@@ -111,13 +112,14 @@
             <a-button
               :loading="actionLoading"
               @click="closeAction">
-              {{ this.$t('label.cancel') }}
+              {{ $t('label.cancel') }}
             </a-button>
             <a-button
               :loading="actionLoading"
               type="primary"
+              htmlType="submit"
               @click="handleSubmit">
-              {{ this.$t('label.ok') }}
+              {{ $t('label.ok') }}
             </a-button>
           </div>
         </a-form>
@@ -166,21 +168,17 @@ export default {
     this.rules = reactive({})
   },
   created () {
+    this.initForm()
     this.fetchTimeZone()
   },
   inject: ['refreshSchedule', 'closeSchedule'],
   methods: {
     initForm () {
       this.form.intervaltype = 'hourly'
-      this.form.time = undefined
-      this.form.timeSelect = undefined
-      this.form['day-of-week'] = undefined
-      this.form['day-of-month'] = undefined
-      this.form.timezone = undefined
       this.rules = {
-        time: [{ required: true, message: this.$t('message.error.required.input') }],
+        time: [{ type: 'number', required: true, message: this.$t('message.error.required.input') }],
         timeSelect: [{ type: 'object', required: true, message: this.$t('message.error.time') }],
-        'day-of-week': [{ required: true, message: `${this.$t('message.error.select')}` }],
+        'day-of-week': [{ type: 'number', required: true, message: `${this.$t('message.error.select')}` }],
         'day-of-month': [{ required: true, message: `${this.$t('message.error.select')}` }],
         timezone: [{ required: true, message: `${this.$t('message.error.select')}` }]
       }
@@ -216,10 +214,10 @@ export default {
       }
     },
     handleChangeIntervalType (e) {
-      this.form.intervalType = e.target.value
+      this.form.intervaltype = e.target.value
       this.resetForm()
 
-      switch (this.form.intervalType) {
+      switch (this.form.intervaltype) {
         case 'weekly':
           this.fetchDayOfWeek()
           break
@@ -232,7 +230,7 @@ export default {
       }
     },
     handleSubmit () {
-      this.formRef.validate().then(() => {
+      this.formRef.value.validate().then(() => {
         const values = toRaw(this.form)
         const params = {}
         params.virtualmachineid = this.resource.id
@@ -268,13 +266,11 @@ export default {
       })
     },
     resetForm () {
-      this.form.setFieldsValue({
-        time: undefined,
-        timezone: undefined,
-        timeSelect: undefined,
-        'day-of-week': undefined,
-        'day-of-month': undefined
-      })
+      this.form.time = undefined
+      this.form.timezone = undefined
+      this.form.timeSelect = undefined
+      this.form['day-of-week'] = undefined
+      this.form['day-of-month'] = undefined
       this.tags = []
     },
     closeAction () {

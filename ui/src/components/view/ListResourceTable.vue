@@ -38,7 +38,7 @@
       <template
         v-for="(column, index) in Object.keys(routerlinks({}))"
         :key="index"
-        v-slot:[column]="{ text, item }" >
+        #[column]="{ text, item }" >
         <router-link :set="routerlink = routerlinks(item)" :to="{ path: routerlink[column] }" >{{ text }}</router-link>
       </template>
 

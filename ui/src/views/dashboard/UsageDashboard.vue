@@ -76,7 +76,7 @@
             </router-link>
           </a-button>
         </div>
-        <template v-slot:footer>
+        <template #footer>
           <div class="usage-dashboard-chart-footer">
             <a-timeline>
               <a-timeline-item

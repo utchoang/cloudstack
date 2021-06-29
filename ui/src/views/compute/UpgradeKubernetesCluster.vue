@@ -83,7 +83,6 @@ export default {
     }
   },
   beforeCreate () {
-    this.form = this.$form.createForm(this)
     this.apiConfig = this.$store.getters.apis.upgradeKubernetesCluster || {}
     this.apiParams = {}
     this.apiConfig.params.forEach(param => {
@@ -149,7 +148,7 @@ export default {
       })
     },
     handleSubmit () {
-      this.formRef.validate().then(() => {
+      this.formRef.value.validate().then(() => {
         const values = toRaw(this.form)
         this.loading = true
         const params = {

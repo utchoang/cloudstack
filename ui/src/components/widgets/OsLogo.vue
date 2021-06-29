@@ -17,7 +17,7 @@
 
 <template>
   <a-tooltip placement="bottom">
-    <template v-slot:title>
+    <template #title>
       {{ name }}
     </template>
     <font-awesome-icon :icon="['fab', logo]" :size="size" style="color: #666;" v-if="logo !== 'debian'" />

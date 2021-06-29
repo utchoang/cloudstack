@@ -85,7 +85,7 @@
     </a-card>
 
     <div v-show="showAction">
-      <keep-alive v-if="currentAction.component && (!currentAction.groupAction || this.selectedRowKeys.length === 0)">
+      <keep-alive v-if="currentAction.component && (!currentAction.groupAction || selectedRowKeys.length === 0)">
         <a-modal
           :visible="showAction"
           :closable="true"
@@ -194,12 +194,12 @@
                     (field.name==='account' && !['addAccountToProject', 'createAccount'].includes(currentAction.api))">
                   <a-select
                     showSearch
-                    optionFilterProp="children"
+                    optionFilterProp="label"
                     v-model:value="form[field.name]"
                     :loading="field.loading"
                     :placeholder="field.description"
                     :filterOption="(input, option) => {
-                      return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                      return option.children[0].children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                     }"
                     :autoFocus="fieldIndex === firstIndex"
                   >
@@ -213,12 +213,12 @@
                   v-else-if="field.type==='uuid'">
                   <a-select
                     showSearch
-                    optionFilterProp="children"
+                    optionFilterProp="label"
                     v-model:value="form[field.name]"
                     :loading="field.loading"
                     :placeholder="field.description"
                     :filterOption="(input, option) => {
-                      return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                      return option.children[0].children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                     }"
                     :autoFocus="fieldIndex === firstIndex"
                   >
@@ -741,9 +741,6 @@ export default {
       this.showAction = true
       for (const param of this.currentAction.paramFields) {
         this.form[param.name] = undefined
-        if (param.type === 'boolean') {
-          this.form[param.name] = false
-        }
         this.rules[param.name] = []
         this.setRules(param)
 
@@ -1209,13 +1206,11 @@ export default {
         case (field.type === 'long'):
           rule.required = field.required
           rule.message = this.$t('message.validate.number')
-          rule.trigger = 'change'
           this.rules[field.name].push(rule)
           break
         case (field.name === 'password' || field.name === 'currentpassword' || field.name === 'confirmpassword'):
           rule.required = field.required
           rule.message = this.$t('message.error.required.input')
-          rule.trigger = 'change'
           this.rules[field.name].push(rule)
 
           rule = {}
@@ -1226,13 +1221,11 @@ export default {
         case (field.name === 'certificate' || field.name === 'privatekey' || field.name === 'certchain'):
           rule.required = field.required
           rule.message = this.$t('message.error.required.input')
-          rule.trigger = 'change'
           this.rules[field.name].push(rule)
           break
         default:
           rule.required = field.required
           rule.message = this.$t('message.error.required.input')
-          rule.trigger = 'change'
           this.rules[field.name].push(rule)
           break
       }

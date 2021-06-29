@@ -1,0 +1,555 @@
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+
+<template>
+  <a-spin :spinning="loading">
+    <div class="form-layout">
+      <div class="form">
+        <a-form
+          :ref="formRef"
+          :model="form"
+          :rules="rules"
+          layout="vertical">
+          <a-form-item ref="name" name="name">
+            <template #label>
+              {{ $t('label.name') }}
+              <a-tooltip :title="apiParams.name.description">
+                <info-circle-outlined style="color: rgba(0,0,0,.45)" />
+              </a-tooltip>
+            </template>
+            <a-input
+             v-model:value="form.name"
+              :placeholder="$t('label.name')"
+              autoFocus/>
+          </a-form-item>
+          <a-form-item ref="displaytext" name="displaytext">
+            <template #label>
+              {{ $t('label.displaytext') }}
+              <a-tooltip :title="apiParams.displaytext.description">
+                <info-circle-outlined style="color: rgba(0,0,0,.45)" />
+              </a-tooltip>
+            </template>
+            <a-input
+             v-model:value="form.displaytext"
+              :placeholder="$t('label.display.text')"/>
+          </a-form-item>
+          <a-form-item ref="zoneid" name="zoneid">
+            <template #label>
+              {{ $t('label.zoneid') }}
+              <a-tooltip :title="apiParams.zoneid.description">
+                <info-circle-outlined style="color: rgba(0,0,0,.45)" />
+              </a-tooltip>
+            </template>
+            <a-select
+             v-model:value="form.zoneid"
+              showSearch
+              optionFilterProp="children"
+              :filterOption="(input, option) => {
+                return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
+              }"
+              :loading="zoneLoading"
+              :placeholder="$t('label.zoneid')"
+              @change="val => { handleZoneChange(zones[val]) }">
+              <a-select-option v-for="(opt, optIndex) in zones" :key="optIndex">
+                {{ opt.name || opt.description }}
+              </a-select-option>
+            </a-select>
+          </a-form-item>
+          <a-form-item ref="domainid" name="domainid" v-if="isAdminOrDomainAdmin()">
+            <template #label>
+              {{ $t('label.domain') }}
+              <a-tooltip :title="apiParams.domainid.description">
+                <info-circle-outlined style="color: rgba(0,0,0,.45)" />
+              </a-tooltip>
+            </template>
+            <a-select
+             v-model:value="form.domainid"
+              showSearch
+              optionFilterProp="children"
+              :filterOption="(input, option) => {
+                return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
+              }"
+              :loading="domainLoading"
+              :placeholder="$t('label.domainid')"
+              @change="val => { handleDomainChange(domains[val]) }">
+              <a-select-option v-for="(opt, optIndex) in domains" :key="optIndex">
+                {{ opt.path || opt.name || opt.description }}
+              </a-select-option>
+            </a-select>
+          </a-form-item>
+          <a-form-item ref="networkofferingid" name="networkofferingid">
+            <template #label>
+              {{ $t('label.networkofferingid') }}
+              <a-tooltip :title="apiParams.networkofferingid.description">
+                <info-circle-outlined style="color: rgba(0,0,0,.45)" />
+              </a-tooltip>
+            </template>
+            <a-select
+             v-model:value="form.networkofferingid"
+              showSearch
+              optionFilterProp="children"
+              :filterOption="(input, option) => {
+                return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
+              }"
+              :loading="networkOfferingLoading"
+              :placeholder="$t('label.networkofferingid')"
+              @change="val => { handleNetworkOfferingChange(networkOfferings[val]) }">
+              <a-select-option v-for="(opt, optIndex) in networkOfferings" :key="optIndex">
+                {{ opt.displaytext || opt.name || opt.description }}
+              </a-select-option>
+            </a-select>
+          </a-form-item>
+          <a-form-item
+            ref="vlanid"
+            name="vlanid"
+            v-if="!isObjectEmpty(selectedNetworkOffering) && selectedNetworkOffering.specifyvlan">
+            <template #label>
+              {{ $t('label.vlan') }}
+              <a-tooltip :title="apiParams.vlan.description">
+                <info-circle-outlined style="color: rgba(0,0,0,.45)" />
+              </a-tooltip>
+            </template>
+            <a-input
+             v-model:value="form.vlanid"
+              :placeholder="$t('label.vlanid')"/>
+          </a-form-item>
+          <a-form-item
+            ref="vpcid"
+            name="vpcid"
+            v-if="!isObjectEmpty(selectedNetworkOffering) && selectedNetworkOffering.forvpc">
+            <template #label>
+              {{ $t('label.vpcid') }}
+              <a-tooltip :title="apiParams.vpcid.description">
+                <info-circle-outlined style="color: rgba(0,0,0,.45)" />
+              </a-tooltip>
+            </template>
+            <a-select
+             v-model:value="form.vpcid"
+              showSearch
+              optionFilterProp="children"
+              :filterOption="(input, option) => {
+                return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
+              }"
+              :loading="vpcLoading"
+              :placeholder="$t('label.vpcid')"
+              @change="val => { selectedVpc = vpcs[val] }">
+              <a-select-option v-for="(opt, optIndex) in vpcs" :key="optIndex">
+                {{ opt.name || opt.description }}
+              </a-select-option>
+            </a-select>
+          </a-form-item>
+          <a-form-item
+            ref="externalid"
+            name="externalid">
+            <template #label>
+              {{ $t('label.externalid') }}
+              <a-tooltip :title="apiParams.externalid.description">
+                <info-circle-outlined style="color: rgba(0,0,0,.45)" />
+              </a-tooltip>
+            </template>
+            <a-input
+             v-model:value="form.externalid"
+              :placeholder="$t('label.externalid')"/>
+          </a-form-item>
+          <a-form-item
+            ref="gateway"
+            name="gateway">
+            <template #label>
+              {{ $t('label.gateway') }}
+              <a-tooltip :title="apiParams.gateway.description">
+                <info-circle-outlined style="color: rgba(0,0,0,.45)" />
+              </a-tooltip>
+            </template>
+            <a-input
+             v-model:value="form.gateway"
+              :placeholder="$t('label.gateway')"/>
+          </a-form-item>
+          <a-form-item
+            ref="netmask"
+            name="netmask">
+            <template #label>
+              {{ $t('label.netmask') }}
+              <a-tooltip :title="apiParams.netmask.description">
+                <info-circle-outlined style="color: rgba(0,0,0,.45)" />
+              </a-tooltip>
+            </template>
+            <a-input
+             v-model:value="form.netmask"
+              :placeholder="$t('label.netmask')"/>
+          </a-form-item>
+          <a-form-item
+            ref="networkdomain"
+            name="networkdomain"
+            v-if="!isObjectEmpty(selectedNetworkOffering) && !selectedNetworkOffering.forvpc">
+            <template #label>
+              {{ $t('label.networkdomain') }}
+              <a-tooltip :title="apiParams.networkdomain.description">
+                <info-circle-outlined style="color: rgba(0,0,0,.45)" />
+              </a-tooltip>
+            </template>
+            <a-input
+             v-model:value="form.networkdomain"
+              :placeholder="$t('label.networkdomain')"/>
+          </a-form-item>
+          <a-form-item
+            ref="account"
+            name="account"
+            v-if="accountVisible">
+            <template #label>
+              {{ $t('label.account') }}
+              <a-tooltip :title="apiParams.account.description">
+                <info-circle-outlined style="color: rgba(0,0,0,.45)" />
+              </a-tooltip>
+            </template>
+            <a-input
+             v-model:value="form.account"
+              :placeholder="$t('label.account')"/>
+          </a-form-item>
+          <div :span="24" class="action-button">
+            <a-button
+              :loading="actionLoading"
+              @click="closeAction">
+              {{ $t('label.cancel') }}
+            </a-button>
+            <a-button
+              :loading="actionLoading"
+              type="primary"
+              htmlType="submit"
+              @click="handleSubmit">
+              {{ $t('label.ok') }}
+            </a-button>
+          </div>
+        </a-form>
+      </div>
+    </div>
+  </a-spin>
+</template>
+
+<script>
+import { ref, reactive, toRaw } from 'vue'
+import { api } from '@/api'
+
+export default {
+  name: 'CreateIsolatedNetworkForm',
+  props: {
+    loading: {
+      type: Boolean,
+      default: false
+    },
+    vpc: {
+      type: Object,
+      default: null
+    },
+    resource: {
+      type: Object,
+      default: () => { return {} }
+    }
+  },
+  data () {
+    return {
+      actionLoading: false,
+      domains: [],
+      domainLoading: false,
+      selectedDomain: {},
+      zones: [],
+      zoneLoading: false,
+      selectedZone: {},
+      networkOfferings: [],
+      networkOfferingLoading: false,
+      selectedNetworkOffering: {},
+      vpcs: [],
+      vpcLoading: false,
+      selectedVpc: {},
+      accountVisible: this.isAdminOrDomainAdmin()
+    }
+  },
+  watch: {
+    resource (newItem, oldItem) {
+      this.fetchData()
+    }
+  },
+  beforeCreate () {
+    this.apiConfig = this.$store.getters.apis.createNetwork || {}
+    this.apiParams = {}
+    this.apiConfig.params.forEach(param => {
+      this.apiParams[param.name] = param
+    })
+  },
+  created () {
+    this.domains = [
+      {
+        id: '-1',
+        name: ' '
+      }
+    ]
+    this.initForm()
+    this.fetchData()
+  },
+  methods: {
+    initForm () {
+      this.formRef = ref()
+      this.form = reactive({})
+      this.rules = reactive({})
+
+      this.rules.name = [{ required: true, message: this.$t('message.error.name') }]
+      this.rules.displaytext = [{ required: true, message: this.$t('message.error.display.text') }]
+      this.rules.zoneid = [{ required: true, message: this.$t('message.error.select') }]
+      this.rules.networkofferingid = [{ required: true, message: this.$t('message.error.select') }]
+      if (!this.isObjectEmpty(this.selectedNetworkOffering) && this.selectedNetworkOffering.specifyvlan) {
+        this.rules.vlanid = [{ required: true, message: this.$t('message.please.enter.value') }]
+      }
+      if (!this.isObjectEmpty(this.selectedNetworkOffering) && this.selectedNetworkOffering.forvpc) {
+        this.rules.vpcid = [{ required: true, message: this.$t('message.error.select') }]
+      }
+    },
+    fetchData () {
+      this.fetchDomainData()
+      this.fetchZoneData()
+    },
+    isAdmin () {
+      return ['Admin'].includes(this.$store.getters.userInfo.roletype)
+    },
+    isAdminOrDomainAdmin () {
+      return ['Admin', 'DomainAdmin'].includes(this.$store.getters.userInfo.roletype)
+    },
+    isObjectEmpty (obj) {
+      return !(obj !== null && obj !== undefined && Object.keys(obj).length > 0 && obj.constructor === Object)
+    },
+    arrayHasItems (array) {
+      return array !== null && array !== undefined && Array.isArray(array) && array.length > 0
+    },
+    isValidTextValueForKey (obj, key) {
+      return key in obj && obj[key] != null && obj[key].length > 0
+    },
+    fetchZoneData () {
+      this.zones = []
+      const params = {}
+      if (this.resource.zoneid && this.$route.name === 'deployVirtualMachine') {
+        params.id = this.resource.zoneid
+      }
+      params.listAll = true
+      this.zoneLoading = true
+      api('listZones', params).then(json => {
+        for (const i in json.listzonesresponse.zone) {
+          const zone = json.listzonesresponse.zone[i]
+          if (zone.networktype === 'Advanced' && zone.securitygroupsenabled !== true) {
+            this.zones.push(zone)
+          }
+        }
+        this.zoneLoading = false
+        if (this.arrayHasItems(this.zones)) {
+          this.form.zoneid = 0
+          this.handleZoneChange(this.zones[0])
+        }
+      })
+    },
+    handleZoneChange (zone) {
+      this.selectedZone = zone
+      this.updateVPCCheckAndFetchNetworkOfferingData()
+    },
+    fetchDomainData () {
+      const params = {}
+      params.listAll = true
+      params.details = 'min'
+      this.domainLoading = true
+      api('listDomains', params).then(json => {
+        const listDomains = json.listdomainsresponse.domain
+        this.domains = this.domains.concat(listDomains)
+      }).finally(() => {
+        this.domainLoading = false
+        this.form.domainid = 0
+        this.handleDomainChange(this.domains[0])
+      })
+    },
+    handleDomainChange (domain) {
+      this.selectedDomain = domain
+      this.accountVisible = domain.id !== '-1'
+      if (this.isAdminOrDomainAdmin()) {
+        this.updateVPCCheckAndFetchNetworkOfferingData()
+      }
+    },
+    updateVPCCheckAndFetchNetworkOfferingData () {
+      if (this.vpc !== null) { // from VPC section
+        this.fetchNetworkOfferingData(true)
+      } else { // from guest network section
+        var params = {}
+        this.networkOfferingLoading = true
+        api('listVPCs', params).then(json => {
+          const listVPCs = json.listvpcsresponse.vpc
+          var vpcAvailable = this.arrayHasItems(listVPCs)
+          if (vpcAvailable === false) {
+            this.fetchNetworkOfferingData(false)
+          } else {
+            this.fetchNetworkOfferingData()
+          }
+        })
+      }
+    },
+    fetchNetworkOfferingData (forVpc) {
+      this.networkOfferingLoading = true
+      var params = {
+        zoneid: this.selectedZone.id,
+        guestiptype: 'Isolated',
+        supportedServices: 'SourceNat',
+        state: 'Enabled'
+      }
+      if (this.isAdminOrDomainAdmin() && this.selectedDomain.id !== '-1') { // domain is visible only for admins
+        params.domainid = this.selectedDomain.id
+      }
+      if (!this.isAdmin()) { // normal user is not aware of the VLANs in the system, so normal user is not allowed to create network with network offerings whose specifyvlan = true
+        params.specifyvlan = false
+      }
+      if (forVpc !== null) {
+        params.forvpc = forVpc
+      }
+      this.networkOfferings = []
+      this.selectedNetworkOffering = {}
+      api('listNetworkOfferings', params).then(json => {
+        this.networkOfferings = json.listnetworkofferingsresponse.networkoffering
+      }).catch(error => {
+        this.$notifyError(error)
+      }).finally(() => {
+        this.networkOfferingLoading = false
+        if (this.arrayHasItems(this.networkOfferings)) {
+          this.form.networkofferingid = 0
+          this.handleNetworkOfferingChange(this.networkOfferings[0])
+        }
+      })
+    },
+    handleNetworkOfferingChange (networkOffering) {
+      this.selectedNetworkOffering = networkOffering
+      if (networkOffering.forvpc) {
+        this.fetchVpcData()
+      }
+    },
+    fetchVpcData () {
+      this.vpcLoading = true
+      var params = {
+        listAll: true,
+        details: 'min'
+      }
+      if (this.vpc !== null) {
+        params.id = this.vpc.id
+      }
+      api('listVPCs', params).then(json => {
+        this.vpcs = json.listvpcsresponse.vpc
+      }).finally(() => {
+        this.vpcLoading = false
+        if (this.arrayHasItems(this.vpcs)) {
+          this.form.vpcid = 0
+          this.selectedVpc = this.vpcs[0]
+        }
+      })
+    },
+    handleSubmit () {
+      this.formRef.value.validate().then(() => {
+        const values = toRaw(this.form)
+        this.actionLoading = true
+        var params = {
+          zoneId: this.selectedZone.id,
+          name: values.name,
+          displayText: values.displaytext,
+          networkOfferingId: this.selectedNetworkOffering.id
+        }
+        if (this.isValidTextValueForKey(values, 'gateway')) {
+          params.gateway = values.gateway
+        }
+        if (this.isValidTextValueForKey(values, 'netmask')) {
+          params.netmask = values.netmask
+        }
+        if (this.isValidTextValueForKey(values, 'externalid')) {
+          params.externalid = values.externalid
+        }
+        if (this.isValidTextValueForKey(values, 'vpcid')) {
+          params.vpcid = this.selectedVpc.id
+        }
+        if (this.isValidTextValueForKey(values, 'vlanid')) {
+          params.vlan = values.vlanid
+        }
+        if (this.isValidTextValueForKey(values, 'networkdomain')) {
+          params.networkdomain = values.networkdomain
+        }
+        if ('domainid' in values && values.domainid > 0) {
+          params.domainid = this.selectedDomain.id
+          if (this.isValidTextValueForKey(values, 'account')) {
+            params.account = values.account
+          }
+        }
+        api('createNetwork', params).then(json => {
+          this.$notification.success({
+            message: 'Network',
+            description: this.$t('message.success.create.isolated.network')
+          })
+          this.$emit('refresh-data')
+          this.closeAction()
+        }).catch(error => {
+          this.$notifyError(error)
+        }).finally(() => {
+          this.actionLoading = false
+        })
+      })
+    },
+    showInput () {
+      this.inputVisible = true
+      this.$nextTick(function () {
+        this.$refs.input.focus()
+      })
+    },
+    resetForm () {
+      this.formRef.value.resetFields()
+      this.tags = []
+    },
+    closeAction () {
+      this.$emit('close-action')
+    }
+  }
+}
+</script>
+
+<style lang="less" scoped>
+.form-layout {
+  .ant-tag {
+    margin-bottom: 10px;
+  }
+
+  /deep/.custom-time-select .ant-time-picker {
+    width: 100%;
+  }
+
+  /deep/.ant-divider-horizontal {
+    margin-top: 0;
+  }
+}
+
+.form {
+  margin: 10px 0;
+}
+
+.tagsTitle {
+  font-weight: 500;
+  color: rgba(0, 0, 0, 0.85);
+  margin-bottom: 12px;
+}
+
+.action-button {
+  text-align: right;
+
+  button {
+    margin-right: 5px;
+  }
+}
+</style>

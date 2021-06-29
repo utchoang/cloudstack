@@ -30,7 +30,7 @@
       :animated="false"
     >
       <a-tab-pane key="cs">
-        <template v-slot:tab>
+        <template #tab>
           <span>
             <SafetyOutlined />
             {{ $t('label.login.portal') }}
@@ -44,7 +44,7 @@
             :placeholder="$t('label.username')"
             v-model:value="form.username"
           >
-            <template v-slot:prefix>
+            <template #prefix>
               <UserOutlined :style="{ color: 'rgba(0,0,0,.25)' }" />
             </template>
           </a-input>
@@ -57,7 +57,7 @@
             :placeholder="$t('label.password')"
             v-model:value="form.password"
           >
-            <template v-slot:prefix>
+            <template #prefix>
               <LockOutlined :style="{ color: 'rgba(0,0,0,.25)' }" />
             </template>
           </a-input-password>
@@ -69,14 +69,14 @@
             :placeholder="$t('label.domain')"
             v-model:value="form.domain"
           >
-            <template v-slot:prefix>
+            <template #prefix>
               <BlockOutlined :style="{ color: 'rgba(0,0,0,.25)' }" />
             </template>
           </a-input>
         </a-form-item>
       </a-tab-pane>
       <a-tab-pane key="saml" :disabled="idps.length === 0">
-        <template v-slot:tab>
+        <template #tab>
           <span>
             <AuditOutlined />
             {{ $t('label.login.single.signon') }}

@@ -94,7 +94,11 @@ import {
   CameraOutlined,
   PoweroffOutlined,
   PaperClipOutlined,
-  CodeOutlined
+  CodeOutlined,
+  FolderAddOutlined,
+  CaretRightOutlined,
+  CloseOutlined,
+  NotificationOutlined
 } from '@ant-design/icons-vue'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -189,5 +193,9 @@ export default {
     app.component('PoweroffOutlined', PoweroffOutlined)
     app.component('PaperClipOutlined', PaperClipOutlined)
     app.component('CodeOutlined', CodeOutlined)
+    app.component('FolderAddOutlined', FolderAddOutlined)
+    app.component('CaretRightOutlined', CaretRightOutlined)
+    app.component('CloseOutlined', CloseOutlined)
+    app.component('NotificationOutlined', NotificationOutlined)
   }
 }
